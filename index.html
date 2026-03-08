@@ -220,8 +220,8 @@
     }
     
     .message {
-        margin-bottom: 15px;
-        padding: 12px 20px;
+        margin-bottom: 5px;
+        padding: 8px 15px;
         background: #e6f2ff;
         border: 2px solid #0066cc;
         border-radius: 5px;
@@ -268,7 +268,7 @@
     .grid-container {
         display: flex;
         justify-content: center;
-        margin: 20px 0;
+        margin: 10px 0;
     }
     
     #sudoku-grid {
@@ -531,45 +531,48 @@
     }
     
     .virtual-keyboard {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+        display: grid;
+        gap: 0;
         justify-content: center;
-        margin-top: 20px;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 10px;
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 5px auto 5px auto;
+        padding: 0;
+        max-width: fit-content;
+    }
+    
+    .virtual-keyboard.size-9 {
+        grid-template-columns: repeat(9, 1fr) auto;
+    }
+    
+    .virtual-keyboard.size-16 {
+        grid-template-columns: repeat(16, 1fr) auto;
     }
     
     .key-btn {
-        min-width: 50px;
-        height: 50px;
-        padding: 5px;
+        width: 100%;
+        aspect-ratio: 1;
+        padding: 0;
+        margin: 0;
         font-family: 'Space Mono', monospace;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         border: 2px solid #0066cc;
         background: linear-gradient(to bottom, white 0%, #f0f0f0 100%);
         color: #333;
         cursor: pointer;
-        border-radius: 8px;
-        box-shadow: 0 3px 0 #0052a3, 0 4px 8px rgba(0,0,0,0.2);
+        border-radius: 4px;
+        box-shadow: 0 2px 0 #0052a3;
         transition: all 0.1s;
         position: relative;
     }
     
     .key-btn:hover:not(:disabled) {
         background: linear-gradient(to bottom, #e6f2ff 0%, #cce5ff 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 0 #0052a3, 0 6px 10px rgba(0,0,0,0.3);
+        transform: translateY(-1px);
     }
     
     .key-btn:active:not(:disabled) {
-        transform: translateY(2px);
-        box-shadow: 0 1px 0 #0052a3, 0 2px 4px rgba(0,0,0,0.2);
+        transform: translateY(1px);
+        box-shadow: 0 1px 0 #0052a3;
     }
     
     .key-btn:disabled {
@@ -577,22 +580,23 @@
         color: #999;
         border-color: #999;
         cursor: not-allowed;
-        box-shadow: 0 2px 0 #888, 0 3px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 0 #888;
     }
     
     .key-btn.delete-key {
         background: linear-gradient(to bottom, #ffebee 0%, #ffcdd2 100%);
         border-color: #dc3545;
-        box-shadow: 0 3px 0 #c82333, 0 4px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 0 #c82333;
+        font-size: 20px;
+        grid-column: span 1;
     }
     
     .key-btn.delete-key:hover:not(:disabled) {
         background: linear-gradient(to bottom, #ffcdd2 0%, #ef9a9a 100%);
-        box-shadow: 0 5px 0 #c82333, 0 6px 10px rgba(0,0,0,0.3);
     }
     
     .key-btn.delete-key:active:not(:disabled) {
-        box-shadow: 0 1px 0 #c82333, 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 1px 0 #c82333;
     }
 </style>
 ```
@@ -1263,13 +1267,25 @@
         const keyboard = document.getElementById('virtualKeyboard');
         keyboard.innerHTML = '';
         
+        // Adapter la classe selon la taille
+        keyboard.className = 'virtual-keyboard';
+        keyboard.classList.add(`size-${SIZE}`);
+        
+        // Calculer la largeur de chaque touche pour correspondre à la grille
+        const cellSize = SIZE === 9 ? 45 : 35;
+        const gridWidth = SIZE * cellSize;
+        const keyWidth = gridWidth / SIZE;
+        
+        keyboard.style.width = `${gridWidth + cellSize}px`; // +1 pour la touche effacer
+        keyboard.style.gridTemplateColumns = `repeat(${SIZE}, ${keyWidth}px) ${cellSize}px`;
+        
         // Créer les touches pour chaque symbole
         for (let i = 0; i < SIZE; i++) {
             const btn = document.createElement('button');
             btn.className = 'key-btn';
             btn.textContent = valueToDisplay(i);
             btn.dataset.value = i;
-            btn.type = 'button'; // Éviter la soumission de formulaire
+            btn.type = 'button';
             
             btn.onclick = () => {
                 if (selectedCell && initialGrid[selectedCell.row][selectedCell.col] === -1) {
@@ -1281,11 +1297,12 @@
             keyboard.appendChild(btn);
         }
         
-        // Ajouter une touche Effacer
+        // Ajouter une touche Effacer avec symbole
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'key-btn delete-key';
-        deleteBtn.textContent = '⌫ Effacer';
+        deleteBtn.innerHTML = '⌫';
         deleteBtn.type = 'button';
+        deleteBtn.title = 'Effacer';
         deleteBtn.onclick = () => {
             if (selectedCell && initialGrid[selectedCell.row][selectedCell.col] === -1) {
                 grid[selectedCell.row][selectedCell.col] = -1;
