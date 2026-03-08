@@ -293,6 +293,14 @@
         transition: all 0.2s;
     }
     
+    .cell.thick-right {
+        border-right: 3px solid #333 !important;
+    }
+    
+    .cell.thick-bottom {
+        border-bottom: 3px solid #333 !important;
+    }
+    
     .cell:hover:not(.initial) {
         background: #f0f0f0;
     }
@@ -1378,16 +1386,12 @@
             cell.className = 'cell';
             cell.textContent = '';
             
-            // Réinitialiser les bordures
-            cell.style.borderRight = '';
-            cell.style.borderBottom = '';
-            
-            // Bordures épaisses selon la taille
+            // Ajouter les classes pour bordures épaisses selon la taille
             if ((col + 1) % BOX_SIZE === 0 && col < SIZE - 1) {
-                cell.style.borderRight = '3px solid #333';
+                cell.classList.add('thick-right');
             }
             if ((row + 1) % BOX_SIZE === 0 && row < SIZE - 1) {
-                cell.style.borderBottom = '3px solid #333';
+                cell.classList.add('thick-bottom');
             }
             
             if (initialGrid[row][col] !== -1) {
