@@ -301,6 +301,27 @@
         border-bottom: 3px solid #333 !important;
     }
     
+    /* Bordures épaisses pour grille 9x9 (tous les 3) */
+    #sudoku-grid[data-size="9"] .cell:nth-child(3n):not(:nth-child(9n)) {
+        border-right: 3px solid #333 !important;
+    }
+    
+    #sudoku-grid[data-size="9"] .cell:nth-child(n+19):nth-child(-n+27),
+    #sudoku-grid[data-size="9"] .cell:nth-child(n+46):nth-child(-n+54) {
+        border-bottom: 3px solid #333 !important;
+    }
+    
+    /* Bordures épaisses pour grille 16x16 (tous les 4) */
+    #sudoku-grid[data-size="16"] .cell:nth-child(4n):not(:nth-child(16n)) {
+        border-right: 3px solid #333 !important;
+    }
+    
+    #sudoku-grid[data-size="16"] .cell:nth-child(n+49):nth-child(-n+64),
+    #sudoku-grid[data-size="16"] .cell:nth-child(n+113):nth-child(-n+128),
+    #sudoku-grid[data-size="16"] .cell:nth-child(n+177):nth-child(-n+192) {
+        border-bottom: 3px solid #333 !important;
+    }
+    
     .cell:hover:not(.initial) {
         background: #f0f0f0;
     }
@@ -1323,6 +1344,9 @@
     function initGrid() {
         const gridEl = document.getElementById('sudoku-grid');
         gridEl.innerHTML = '';
+        
+        // Ajouter l'attribut data-size pour les règles CSS nth-child
+        gridEl.setAttribute('data-size', SIZE);
         
         // Adapter le style selon la taille
         const cellSize = SIZE === 9 ? '45px' : '35px';
