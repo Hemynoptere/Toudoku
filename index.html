@@ -1378,6 +1378,10 @@
             cell.className = 'cell';
             cell.textContent = '';
             
+            // Réinitialiser les bordures
+            cell.style.borderRight = '';
+            cell.style.borderBottom = '';
+            
             // Bordures épaisses selon la taille
             if ((col + 1) % BOX_SIZE === 0 && col < SIZE - 1) {
                 cell.style.borderRight = '3px solid #333';
