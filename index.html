@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -6,1774 +7,1950 @@
     <title>Alphadoku 16×16</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Righteous&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Space Mono', monospace;
-            background: white;
-            color: #333;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        h1 {
-            font-family: 'Righteous', cursive;
-            font-size: 2em;
-            margin-bottom: 30px;
-            color: #0066cc;
-        }
-        
-        .screen {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-        }
-        
-        .screen.active {
-            display: block;
-        }
-        
-        /* Écran de configuration */
-        .config-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 2px solid #dee2e6;
-        }
-        
-        .config-section h2 {
-            color: #0066cc;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        input[type="text"], select {
-            width: 100%;
-            padding: 10px;
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            border: 2px solid #0066cc;
-            border-radius: 5px;
-        }
-        
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        
-        button {
-            padding: 12px 25px;
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            border: 2px solid #0066cc;
-            background: #0066cc;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        
-        button:hover {
-            background: #0052a3;
-        }
-        
-        button.secondary {
-            background: white;
-            color: #0066cc;
-        }
-        
-        button.secondary:hover {
-            background: #e6f2ff;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .player-list {
-            max-height: 200px;
-            overflow-y: auto;
-            border: 2px solid #dee2e6;
-            border-radius: 5px;
-            padding: 10px;
-        }
-        
-        .player-item {
-            padding: 10px;
-            margin-bottom: 5px;
-            background: white;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        
-        .player-item:hover {
-            border-color: #0066cc;
-        }
-        
-        .player-item.selected {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .player-stats {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .player-item.selected .player-stats {
-            color: #cce5ff;
-        }
-        
-        .delete-btn {
-            color: #dc3545;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0 8px;
-        }
-        
-        .player-item.selected .delete-btn {
-            color: #ffcccc;
-        }
-        
-        /* Écran de jeu */
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .game-info {
-            font-size: 13px;
-        }
-        
-        .game-info strong {
-            color: #0066cc;
-        }
-        
-        .game-controls {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-        
-        .game-controls button {
-            padding: 8px 15px;
-            font-size: 12px;
-        }
-        
-        button.danger {
-            background: #dc3545;
-            border-color: #dc3545;
-        }
-        
-        button.danger:hover {
-            background: #c82333;
-        }
-        
-        .message {
-            margin-bottom: 15px;
-            padding: 12px 20px;
-            background: #e6f2ff;
-            border: 2px solid #0066cc;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        
-        .message.success {
-            background: #d4edda;
-            border-color: #28a745;
-            color: #155724;
-        }
-        
-        .message.warning {
-            background: #fff3cd;
-            border-color: #ffc107;
-            color: #856404;
-        }
-        
-        .message.error {
-            background: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
-        }
-        
-        .error-counter {
-            display: inline-block;
-            padding: 6px 12px;
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #856404;
-            font-size: 12px;
-        }
-        
-        .error-counter.danger {
-            background: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
-        }
-        
-        .grid-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        #sudoku-grid {
-            display: grid;
-            grid-template-columns: repeat(16, 35px);
-            gap: 1px;
-            background: #333;
-            border: 3px solid #333;
-        }
-        
-        .cell {
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            background: white;
-            border: 1px solid #ddd;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .cell:hover:not(.initial) {
-            background: #f0f0f0;
-        }
-        
-        .cell.initial {
-            background: #e6f2ff;
-            color: #0066cc;
-            cursor: default;
-        }
-        
-        .cell.user-input {
-            color: #333;
-        }
-        
-        .cell.selected {
-            background: #fff8dc;
-            box-shadow: inset 0 0 0 2px #0066cc;
-        }
-        
-        .cell.selected.empty::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 20px;
-            background: #333;
-            animation: blink 1s step-end infinite;
-        }
-        
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        
-        .cell.error {
-            background: rgba(255, 0, 0, 0.3);
-            color: #ff4444;
-            animation: shake 0.3s;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
-        }
-        
-        .cell.hint {
-            background: rgba(0, 255, 0, 0.2);
-            color: #00aa00;
-            animation: pulse 1s ease infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-        
-        .cell.candidates {
-            color: #4da6ff;
-            font-size: 10px;
-        }
-        
-        .cell.candidates::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            border: 2px solid #4da6ff;
-            border-radius: 50%;
-            animation: rotate 2s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        #hidden-input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-            left: -9999px;
-        }
-        
-        .help-text {
-            font-size: 12px;
-            color: #666;
-            font-style: italic;
-            margin-top: 5px;
-        }
-        
-        .scores-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        
-        .scores-table th {
-            background: #0066cc;
-            color: white;
-            padding: 10px;
-            text-align: left;
-            font-size: 13px;
-        }
-        
-        .scores-table td {
-            padding: 10px;
-            border-bottom: 1px solid #dee2e6;
-            font-size: 13px;
-        }
-        
-        .scores-table tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-        
-        .medal {
-            font-size: 18px;
-            margin-right: 5px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            border: 2px solid #dee2e6;
-        }
-        
-        .stat-card h3 {
-            color: #0066cc;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 13px;
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 30px;
-            color: #999;
-            font-style: italic;
-        }
-        
-        .help-content {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        .help-section {
-            margin-bottom: 25px;
-        }
-        
-        .help-section h3 {
-            color: #0066cc;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        .help-section ul {
-            margin-left: 25px;
-            margin-top: 10px;
-        }
-        
-        .help-section li {
-            margin-bottom: 8px;
-        }
-        
-        .help-section p {
-            margin-bottom: 10px;
-        }
-        
-        .help-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 13px;
-        }
-        
-        .help-table th {
-            background: #0066cc;
-            color: white;
-            padding: 10px;
-            text-align: left;
-        }
-        
-        .help-table td {
-            padding: 10px;
-            border: 1px solid #dee2e6;
-            vertical-align: top;
-        }
-        
-        .help-table tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-        
-        .help-tip {
-            background: #d4edda;
-            border: 2px solid #28a745;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 13px;
-        }
-    </style>
+
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Space Mono', monospace;
+        background: white;
+        color: #333;
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    h1 {
+        font-family: 'Righteous', cursive;
+        font-size: 2em;
+        margin-bottom: 30px;
+        color: #0066cc;
+    }
+    
+    .screen {
+        display: none;
+        width: 100%;
+        max-width: 800px;
+    }
+    
+    .screen.active {
+        display: block;
+    }
+    
+    /* Écran de configuration */
+    .config-section {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 2px solid #dee2e6;
+    }
+    
+    .config-section h2 {
+        color: #0066cc;
+        font-size: 1.2em;
+        margin-bottom: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    input[type="text"], select {
+        width: 100%;
+        padding: 10px;
+        font-family: 'Space Mono', monospace;
+        font-size: 14px;
+        border: 2px solid #0066cc;
+        border-radius: 5px;
+    }
+    
+    .radio-group {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+    
+    button {
+        padding: 12px 25px;
+        font-family: 'Space Mono', monospace;
+        font-size: 14px;
+        border: 2px solid #0066cc;
+        background: #0066cc;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.2s;
+    }
+    
+    button:hover {
+        background: #0052a3;
+    }
+    
+    button.secondary {
+        background: white;
+        color: #0066cc;
+    }
+    
+    button.secondary:hover {
+        background: #e6f2ff;
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    .player-list {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 2px solid #dee2e6;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    
+    .player-item {
+        padding: 10px;
+        margin-bottom: 5px;
+        background: white;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+    
+    .player-item:hover {
+        border-color: #0066cc;
+    }
+    
+    .player-item.selected {
+        background: #0066cc;
+        color: white;
+    }
+    
+    .player-stats {
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .player-item.selected .player-stats {
+        color: #cce5ff;
+    }
+    
+    .delete-btn {
+        color: #dc3545;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 0 8px;
+    }
+    
+    .player-item.selected .delete-btn {
+        color: #ffcccc;
+    }
+    
+    /* Écran de jeu */
+    .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .game-info {
+        font-size: 13px;
+    }
+    
+    .game-info strong {
+        color: #0066cc;
+    }
+    
+    .game-controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
+    .game-controls button {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+    
+    button.danger {
+        background: #dc3545;
+        border-color: #dc3545;
+    }
+    
+    button.danger:hover {
+        background: #c82333;
+    }
+    
+    .message {
+        margin-bottom: 15px;
+        padding: 12px 20px;
+        background: #e6f2ff;
+        border: 2px solid #0066cc;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: bold;
+    }
+    
+    .message.success {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+    }
+    
+    .message.warning {
+        background: #fff3cd;
+        border-color: #ffc107;
+        color: #856404;
+    }
+    
+    .message.error {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    
+    .error-counter {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 5px;
+        font-weight: bold;
+        color: #856404;
+        font-size: 12px;
+    }
+    
+    .error-counter.danger {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    
+    .grid-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+    
+    #sudoku-grid {
+        display: grid;
+        grid-template-columns: repeat(16, 35px);
+        gap: 1px;
+        background: #333;
+        border: 3px solid #333;
+    }
+    
+    .cell {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
+        background: white;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .cell:hover:not(.initial) {
+        background: #f0f0f0;
+    }
+    
+    .cell.initial {
+        background: #e6f2ff;
+        color: #0066cc;
+        cursor: default;
+    }
+    
+    .cell.user-input {
+        color: #333;
+    }
+    
+    .cell.selected {
+        background: #fff8dc;
+        box-shadow: inset 0 0 0 2px #0066cc;
+    }
+    
+    .cell.selected.empty::after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: 20px;
+        background: #333;
+        animation: blink 1s step-end infinite;
+    }
+    
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+    
+    .cell.error {
+        background: rgba(255, 0, 0, 0.3);
+        color: #ff4444;
+        animation: shake 0.3s;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-3px); }
+        75% { transform: translateX(3px); }
+    }
+    
+    .cell.hint {
+        background: rgba(0, 255, 0, 0.2);
+        color: #00aa00;
+        animation: pulse 1s ease infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+    
+    .cell.candidates {
+        color: #4da6ff;
+        font-size: 10px;
+    }
+    
+    .cell.candidates::after {
+        content: '';
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        border: 2px solid #4da6ff;
+        border-radius: 50%;
+        animation: rotate 2s linear infinite;
+    }
+    
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    #hidden-input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        left: -9999px;
+    }
+    
+    .help-text {
+        font-size: 12px;
+        color: #666;
+        font-style: italic;
+        margin-top: 5px;
+    }
+    
+    .scores-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    
+    .scores-table th {
+        background: #0066cc;
+        color: white;
+        padding: 10px;
+        text-align: left;
+        font-size: 13px;
+    }
+    
+    .scores-table td {
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 13px;
+    }
+    
+    .scores-table tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    
+    .medal {
+        font-size: 18px;
+        margin-right: 5px;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        border: 2px solid #dee2e6;
+    }
+    
+    .stat-card h3 {
+        color: #0066cc;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+    
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        font-size: 13px;
+    }
+    
+    .no-data {
+        text-align: center;
+        padding: 30px;
+        color: #999;
+        font-style: italic;
+    }
+    
+    .help-content {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    .help-section {
+        margin-bottom: 25px;
+    }
+    
+    .help-section h3 {
+        color: #0066cc;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+    
+    .help-section ul {
+        margin-left: 25px;
+        margin-top: 10px;
+    }
+    
+    .help-section li {
+        margin-bottom: 8px;
+    }
+    
+    .help-section p {
+        margin-bottom: 10px;
+    }
+    
+    .help-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 13px;
+    }
+    
+    .help-table th {
+        background: #0066cc;
+        color: white;
+        padding: 10px;
+        text-align: left;
+    }
+    
+    .help-table td {
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        vertical-align: top;
+    }
+    
+    .help-table tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    
+    .help-tip {
+        background: #d4edda;
+        border: 2px solid #28a745;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        font-size: 13px;
+    }
+    
+    .virtual-keyboard {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .key-btn {
+        min-width: 50px;
+        height: 50px;
+        padding: 5px;
+        font-family: 'Space Mono', monospace;
+        font-size: 18px;
+        font-weight: bold;
+        border: 2px solid #0066cc;
+        background: linear-gradient(to bottom, white 0%, #f0f0f0 100%);
+        color: #333;
+        cursor: pointer;
+        border-radius: 8px;
+        box-shadow: 0 3px 0 #0052a3, 0 4px 8px rgba(0,0,0,0.2);
+        transition: all 0.1s;
+        position: relative;
+    }
+    
+    .key-btn:hover:not(:disabled) {
+        background: linear-gradient(to bottom, #e6f2ff 0%, #cce5ff 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 #0052a3, 0 6px 10px rgba(0,0,0,0.3);
+    }
+    
+    .key-btn:active:not(:disabled) {
+        transform: translateY(2px);
+        box-shadow: 0 1px 0 #0052a3, 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .key-btn:disabled {
+        background: linear-gradient(to bottom, #e0e0e0 0%, #d0d0d0 100%);
+        color: #999;
+        border-color: #999;
+        cursor: not-allowed;
+        box-shadow: 0 2px 0 #888, 0 3px 6px rgba(0,0,0,0.1);
+    }
+    
+    .key-btn.delete-key {
+        background: linear-gradient(to bottom, #ffebee 0%, #ffcdd2 100%);
+        border-color: #dc3545;
+        box-shadow: 0 3px 0 #c82333, 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .key-btn.delete-key:hover:not(:disabled) {
+        background: linear-gradient(to bottom, #ffcdd2 0%, #ef9a9a 100%);
+        box-shadow: 0 5px 0 #c82333, 0 6px 10px rgba(0,0,0,0.3);
+    }
+    
+    .key-btn.delete-key:active:not(:disabled) {
+        box-shadow: 0 1px 0 #c82333, 0 2px 4px rgba(0,0,0,0.2);
+    }
+</style>
+```
+
 </head>
 <body>
-    <input type="text" id="hidden-input" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters">
+    <input type="text" id="hidden-input" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" readonly style="position: absolute; opacity: 0; pointer-events: none; left: -9999px;">
 
-    <!-- ÉCRAN 1: CONFIGURATION -->
-    <div id="configScreen" class="screen active">
-        <h1>🔤 TOUDOKU</h1>
-        
-        <div class="config-section">
-            <h2>👤 Joueur</h2>
-            <div class="form-group">
-                <label>Nouveau joueur :</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="newPlayerName" placeholder="Entrez un nom">
-                    <button onclick="addPlayer()">Ajouter</button>
-                </div>
+```
+<!-- ÉCRAN 1: CONFIGURATION -->
+<div id="configScreen" class="screen active">
+    <h1>🔤 TOUDOKU</h1>
+    
+    <div class="config-section">
+        <h2>👤 Joueur</h2>
+        <div class="form-group">
+            <label>Nouveau joueur :</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="newPlayerName" placeholder="Entrez un nom">
+                <button onclick="addPlayer()">Ajouter</button>
             </div>
-            <div class="form-group">
-                <label>Sélectionner un joueur :</label>
-                <div id="playerList" class="player-list">
-                    <div style="padding: 20px; text-align: center; color: #999;">
-                        Aucun joueur enregistré
-                    </div>
+        </div>
+        <div class="form-group">
+            <label>Sélectionner un joueur :</label>
+            <div id="playerList" class="player-list">
+                <div style="padding: 20px; text-align: center; color: #999;">
+                    Aucun joueur enregistré
                 </div>
             </div>
         </div>
-        
-        <div class="config-section">
-            <h2>🎮 Paramètres du jeu</h2>
-            <div class="form-group">
-                <label>Choix de la grille :</label>
-                <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="grid9letters" name="gridType" value="9-letters">
-                        <label for="grid9letters">9×9 (Lettres A-I)</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="grid9numbers" name="gridType" value="9-numbers">
-                        <label for="grid9numbers">9×9 (Chiffres 1-9)</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="grid16letters" name="gridType" value="16-letters" checked>
-                        <label for="grid16letters">16×16 (Lettres A-P)</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="grid16numbers" name="gridType" value="16-numbers">
-                        <label for="grid16numbers">16×16 (Chiffres 1-16)</label>
-                    </div>
+    </div>
+    
+    <div class="config-section">
+        <h2>🎮 Paramètres du jeu</h2>
+        <div class="form-group">
+            <label>Choix de la grille :</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="grid9letters" name="gridType" value="9-letters">
+                    <label for="grid9letters">9×9 (Lettres A-I)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="grid9numbers" name="gridType" value="9-numbers">
+                    <label for="grid9numbers">9×9 (Chiffres 1-9)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="grid16letters" name="gridType" value="16-letters" checked>
+                    <label for="grid16letters">16×16 (Lettres A-P)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="grid16numbers" name="gridType" value="16-numbers">
+                    <label for="grid16numbers">16×16 (Chiffres 1-16)</label>
                 </div>
             </div>
-            <div class="form-group">
-                <label>Difficulté :</label>
-                <select id="configDifficulty">
+        </div>
+        <div class="form-group">
+            <label>Difficulté :</label>
+            <select id="configDifficulty">
+                <option value="facile">Facile</option>
+                <option value="moyen">Moyen</option>
+                <option value="difficile">Difficile</option>
+                <option value="expert">Expert</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Mode de jeu :</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="modeNormal" name="gameMode" value="normal" checked>
+                    <label for="modeNormal">Normal</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="modeCorrected" name="gameMode" value="corrected">
+                    <label for="modeCorrected">Corrigé</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="modeStepByStep" name="gameMode" value="stepByStep">
+                    <label for="modeStepByStep">Pas à pas</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="mode3Errors" name="gameMode" value="errors">
+                    <label for="mode3Errors">Mode 3 erreurs</label>
+                </div>
+            </div>
+            <div class="help-text">
+                Normal: aucune correction | Corrigé: détection immédiate | Pas à pas: aide progressive | 3 erreurs: comptage avant alerte
+            </div>
+        </div>
+    </div>
+    
+    <div class="button-group">
+        <button onclick="startGame()">▶️ Commencer</button>
+        <button class="secondary" onclick="loadSavedGame()">📂 Reprendre partie</button>
+        <button class="secondary" onclick="showScores()">🏆 Scores</button>
+        <button class="secondary" onclick="showHelp()">❓ Mode d'emploi</button>
+    </div>
+</div>
+
+<!-- ÉCRAN 2: JEU -->
+<div id="gameScreen" class="screen">
+    <div class="game-header">
+        <div class="game-info">
+            <div><strong>Joueur:</strong> <span id="playerName">-</span></div>
+            <div><strong>Difficulté:</strong> <span id="gameDifficulty">-</span></div>
+            <div><strong>Mode:</strong> <span id="gameMode">-</span></div>
+        </div>
+        <div>
+            <button class="secondary" onclick="backToConfig()">⚙️ Config</button>
+        </div>
+    </div>
+    
+    <div class="game-controls">
+        <button onclick="newGameFromScreen()">Nouvelle Grille</button>
+        <button onclick="verify()">Vérifier</button>
+        <button onclick="solve()">Résoudre</button>
+        <button id="clearBtn" onclick="clear()">Vider</button>
+        <button class="secondary" onclick="saveGame()">💾 Sauvegarder</button>
+        <span id="errorCounter" style="display: none;"></span>
+    </div>
+    
+    <div id="message" class="message">Prêt à jouer !</div>
+    
+    <div class="grid-container">
+        <div id="sudoku-grid"></div>
+    </div>
+    
+    <div id="virtualKeyboard" class="virtual-keyboard"></div>
+</div>
+
+<!-- ÉCRAN 3: SCORES -->
+<div id="scoresScreen" class="screen">
+    <h1>🏆 TABLEAU DES SCORES</h1>
+    
+    <div class="config-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin: 0;">Meilleurs temps par niveau</h2>
+            <button class="secondary" onclick="backToConfigFromScores()">← Retour</button>
+        </div>
+        
+        <div class="form-group">
+            <label>Filtrer par :</label>
+            <div style="display: flex; gap: 10px; flex-wrap: nowrap;">
+                <select id="filterSize" onchange="updateScoresDisplay()" style="flex: 1;">
+                    <option value="all">Toutes tailles</option>
+                    <option value="9">9×9</option>
+                    <option value="16">16×16</option>
+                </select>
+                <select id="filterDifficulty" onchange="updateScoresDisplay()" style="flex: 1;">
+                    <option value="all">Toutes difficultés</option>
                     <option value="facile">Facile</option>
                     <option value="moyen">Moyen</option>
                     <option value="difficile">Difficile</option>
                     <option value="expert">Expert</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label>Mode de jeu :</label>
-                <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="modeNormal" name="gameMode" value="normal" checked>
-                        <label for="modeNormal">Normal</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="modeCorrected" name="gameMode" value="corrected">
-                        <label for="modeCorrected">Corrigé</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="modeStepByStep" name="gameMode" value="stepByStep">
-                        <label for="modeStepByStep">Pas à pas</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="mode3Errors" name="gameMode" value="errors">
-                        <label for="mode3Errors">Mode 3 erreurs</label>
-                    </div>
-                </div>
-                <div class="help-text">
-                    Normal: aucune correction | Corrigé: détection immédiate | Pas à pas: aide progressive | 3 erreurs: comptage avant alerte
-                </div>
+                <select id="filterMode" onchange="updateScoresDisplay()" style="flex: 1;">
+                    <option value="all">Tous modes</option>
+                    <option value="normal">Normal</option>
+                    <option value="corrigé">Corrigé</option>
+                    <option value="pas à pas">Pas à pas</option>
+                    <option value="mode 3 erreurs">Mode 3 erreurs</option>
+                </select>
             </div>
         </div>
         
-        <div class="button-group">
-            <button onclick="startGame()">▶️ Commencer</button>
-            <button class="secondary" onclick="loadSavedGame()">📂 Reprendre partie</button>
-            <button class="secondary" onclick="showScores()">🏆 Scores</button>
-            <button class="secondary" onclick="showHelp()">❓ Mode d'emploi</button>
-        </div>
+        <div id="scoresTable" style="margin-top: 20px;"></div>
     </div>
-
-    <!-- ÉCRAN 2: JEU -->
-    <div id="gameScreen" class="screen">
-        <div class="game-header">
-            <div class="game-info">
-                <div><strong>Joueur:</strong> <span id="playerName">-</span></div>
-                <div><strong>Difficulté:</strong> <span id="gameDifficulty">-</span></div>
-                <div><strong>Mode:</strong> <span id="gameMode">-</span></div>
-            </div>
-            <div>
-                <button class="secondary" onclick="backToConfig()">⚙️ Config</button>
-            </div>
-        </div>
-        
-        <div class="game-controls">
-            <button onclick="newGameFromScreen()">Nouvelle Grille</button>
-            <button onclick="verify()">Vérifier</button>
-            <button onclick="solve()">Résoudre</button>
-            <button id="clearBtn" onclick="clear()">Vider</button>
-            <button class="secondary" onclick="saveGame()">💾 Sauvegarder</button>
-            <span id="errorCounter" style="display: none;"></span>
-        </div>
-        
-        <div id="message" class="message">Prêt à jouer !</div>
-        
-        <div class="grid-container">
-            <div id="sudoku-grid"></div>
-        </div>
+    
+    <div class="config-section">
+        <h2>📊 Statistiques par joueur</h2>
+        <div id="playerStats"></div>
     </div>
+</div>
 
-    <!-- ÉCRAN 3: SCORES -->
-    <div id="scoresScreen" class="screen">
-        <h1>🏆 TABLEAU DES SCORES</h1>
+<!-- ÉCRAN 4: MODE D'EMPLOI -->
+<div id="helpScreen" class="screen">
+    <h1>📖 MODE D'EMPLOI - TOUDOKU</h1>
+    
+    <div class="config-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin: 0;">Comment jouer</h2>
+            <button class="secondary" onclick="backToConfigFromHelp()">← Retour</button>
+        </div>
         
-        <div class="config-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2 style="margin: 0;">Meilleurs temps par niveau</h2>
-                <button class="secondary" onclick="backToConfigFromScores()">← Retour</button>
+        <div class="help-content">
+            <div class="help-section">
+                <h3>🎯 But du jeu</h3>
+                <p>Remplir la grille de sorte que <strong>chaque symbole apparaisse une seule fois</strong> dans :</p>
+                <ul>
+                    <li>Chaque ligne</li>
+                    <li>Chaque colonne</li>
+                    <li>Chaque zone (3×3 pour grilles 9×9, 4×4 pour grilles 16×16)</li>
+                </ul>
             </div>
             
-            <div class="form-group">
-                <label>Filtrer par :</label>
-                <div style="display: flex; gap: 10px;">
-                    <select id="filterSize" onchange="updateScoresDisplay()">
-                        <option value="all">Toutes les tailles</option>
-                        <option value="9">9×9</option>
-                        <option value="16">16×16</option>
-                    </select>
-                    <select id="filterDifficulty" onchange="updateScoresDisplay()">
-                        <option value="all">Toutes les difficultés</option>
-                        <option value="facile">Facile</option>
-                        <option value="moyen">Moyen</option>
-                        <option value="difficile">Difficile</option>
-                        <option value="expert">Expert</option>
-                    </select>
-                </div>
+            <div class="help-section">
+                <h3>🎮 Choix de la grille</h3>
+                <table class="help-table">
+                    <tr>
+                        <th>Grille</th>
+                        <th>Symboles utilisés</th>
+                        <th>Saisie au clavier</th>
+                    </tr>
+                    <tr>
+                        <td><strong>9×9 Lettres</strong></td>
+                        <td>A B C D E F G H I</td>
+                        <td>Tapez les lettres A à I</td>
+                    </tr>
+                    <tr>
+                        <td><strong>9×9 Chiffres</strong></td>
+                        <td>1 2 3 4 5 6 7 8 9</td>
+                        <td>Tapez les chiffres 1 à 9</td>
+                    </tr>
+                    <tr>
+                        <td><strong>16×16 Lettres</strong></td>
+                        <td>A B C D ... N O P</td>
+                        <td>Tapez les lettres A à P</td>
+                    </tr>
+                    <tr>
+                        <td><strong>16×16 Chiffres</strong></td>
+                        <td>1 2 3 4 ... 15 16</td>
+                        <td><strong>⚠️ Important :</strong><br>
+                            • 1 à 9 : tapez 1 à 9<br>
+                            • 10 : tapez A<br>
+                            • 11 : tapez B<br>
+                            • 12 : tapez C<br>
+                            • 13 : tapez D<br>
+                            • 14 : tapez E<br>
+                            • 15 : tapez F<br>
+                            • 16 : tapez G
+                        </td>
+                    </tr>
+                </table>
             </div>
             
-            <div id="scoresTable" style="margin-top: 20px;"></div>
-        </div>
-        
-        <div class="config-section">
-            <h2>📊 Statistiques par joueur</h2>
-            <div id="playerStats"></div>
-        </div>
-    </div>
-
-    <!-- ÉCRAN 4: MODE D'EMPLOI -->
-    <div id="helpScreen" class="screen">
-        <h1>📖 MODE D'EMPLOI - TOUDOKU</h1>
-        
-        <div class="config-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2 style="margin: 0;">Comment jouer</h2>
-                <button class="secondary" onclick="backToConfigFromHelp()">← Retour</button>
+            <div class="help-section">
+                <h3>⚙️ Modes de jeu</h3>
+                <ul>
+                    <li><strong>Normal :</strong> Aucune aide, vous pouvez placer n'importe quelle valeur</li>
+                    <li><strong>Corrigé :</strong> Le jeu détecte immédiatement les doublons et efface la valeur erronée</li>
+                    <li><strong>Pas à pas :</strong> Le jeu vous guide en affichant une case sûre en vert. Si aucune case n'est certaine, un "fil d'Ariane" affiche les valeurs possibles en bleu</li>
+                    <li><strong>Mode 3 erreurs :</strong> Vous pouvez faire 3 erreurs avant que le jeu ne vous les affiche toutes en rouge</li>
+                </ul>
             </div>
             
-            <div class="help-content">
-                <div class="help-section">
-                    <h3>🎯 But du jeu</h3>
-                    <p>Remplir la grille de sorte que <strong>chaque symbole apparaisse une seule fois</strong> dans :</p>
-                    <ul>
-                        <li>Chaque ligne</li>
-                        <li>Chaque colonne</li>
-                        <li>Chaque zone (3×3 pour grilles 9×9, 4×4 pour grilles 16×16)</li>
-                    </ul>
-                </div>
-                
-                <div class="help-section">
-                    <h3>🎮 Choix de la grille</h3>
-                    <table class="help-table">
-                        <tr>
-                            <th>Grille</th>
-                            <th>Symboles utilisés</th>
-                            <th>Saisie au clavier</th>
-                        </tr>
-                        <tr>
-                            <td><strong>9×9 Lettres</strong></td>
-                            <td>A B C D E F G H I</td>
-                            <td>Tapez les lettres A à I</td>
-                        </tr>
-                        <tr>
-                            <td><strong>9×9 Chiffres</strong></td>
-                            <td>1 2 3 4 5 6 7 8 9</td>
-                            <td>Tapez les chiffres 1 à 9</td>
-                        </tr>
-                        <tr>
-                            <td><strong>16×16 Lettres</strong></td>
-                            <td>A B C D ... N O P</td>
-                            <td>Tapez les lettres A à P</td>
-                        </tr>
-                        <tr>
-                            <td><strong>16×16 Chiffres</strong></td>
-                            <td>1 2 3 4 ... 15 16</td>
-                            <td><strong>⚠️ Important :</strong><br>
-                                • 1 à 9 : tapez 1 à 9<br>
-                                • 10 : tapez A<br>
-                                • 11 : tapez B<br>
-                                • 12 : tapez C<br>
-                                • 13 : tapez D<br>
-                                • 14 : tapez E<br>
-                                • 15 : tapez F<br>
-                                • 16 : tapez G
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <div class="help-section">
-                    <h3>⚙️ Modes de jeu</h3>
-                    <ul>
-                        <li><strong>Normal :</strong> Aucune aide, vous pouvez placer n'importe quelle valeur</li>
-                        <li><strong>Corrigé :</strong> Le jeu détecte immédiatement les doublons et efface la valeur erronée</li>
-                        <li><strong>Pas à pas :</strong> Le jeu vous guide en affichant une case sûre en vert. Si aucune case n'est certaine, un "fil d'Ariane" affiche les valeurs possibles en bleu</li>
-                        <li><strong>Mode 3 erreurs :</strong> Vous pouvez faire 3 erreurs avant que le jeu ne vous les affiche toutes en rouge</li>
-                    </ul>
-                </div>
-                
-                <div class="help-section">
-                    <h3>🎲 Niveaux de difficulté</h3>
-                    <ul>
-                        <li><strong>Facile :</strong> Beaucoup de cases pré-remplies</li>
-                        <li><strong>Moyen :</strong> Difficulté standard</li>
-                        <li><strong>Difficile :</strong> Moins de cases pré-remplies</li>
-                        <li><strong>Expert :</strong> Très peu de cases pré-remplies, pour les joueurs expérimentés</li>
-                    </ul>
-                </div>
-                
-                <div class="help-section">
-                    <h3>🕹️ Commandes</h3>
-                    <ul>
-                        <li><strong>Clic sur une case :</strong> Sélectionner la case</li>
-                        <li><strong>Clavier :</strong> Saisir le symbole (voir tableau ci-dessus)</li>
-                        <li><strong>Suppr ou Backspace :</strong> Effacer une case</li>
-                        <li><strong>Sur tablette :</strong> Le clavier tactile s'affiche automatiquement</li>
-                    </ul>
-                </div>
-                
-                <div class="help-section">
-                    <h3>🔧 Boutons d'action</h3>
-                    <ul>
-                        <li><strong>Nouvelle Grille :</strong> Génère une nouvelle partie avec les mêmes paramètres</li>
-                        <li><strong>Vérifier :</strong> Affiche vos erreurs en rouge pendant 2 secondes puis les efface</li>
-                        <li><strong>Résoudre :</strong> Affiche la solution complète (fin de partie)</li>
-                        <li><strong>Vider :</strong> Efface toutes vos saisies pour recommencer</li>
-                        <li><strong>💾 Sauvegarder :</strong> Enregistre votre partie en cours</li>
-                    </ul>
-                </div>
-                
-                <div class="help-tip">
-                    <strong>💡 Astuce pour débutants :</strong> Commencez par une grille 9×9 en mode "Corrigé" avec difficulté "Facile". Le jeu vous aidera à comprendre les règles en détectant vos erreurs !
-                </div>
-                
-                <div class="help-tip" style="background: #fff3cd; border-color: #ffc107;">
-                    <strong>⚠️ Pour la grille 16×16 avec chiffres :</strong> N'oubliez pas que pour saisir 10 à 16, vous devez utiliser les touches A à G du clavier. Le chiffre correspondant s'affichera automatiquement.
-                </div>
+            <div class="help-section">
+                <h3>🎲 Niveaux de difficulté</h3>
+                <ul>
+                    <li><strong>Facile :</strong> Beaucoup de cases pré-remplies</li>
+                    <li><strong>Moyen :</strong> Difficulté standard</li>
+                    <li><strong>Difficile :</strong> Moins de cases pré-remplies</li>
+                    <li><strong>Expert :</strong> Très peu de cases pré-remplies, pour les joueurs expérimentés</li>
+                </ul>
+            </div>
+            
+            <div class="help-section">
+                <h3>🕹️ Commandes</h3>
+                <ul>
+                    <li><strong>Clic sur une case :</strong> Sélectionner la case</li>
+                    <li><strong>Clavier :</strong> Saisir le symbole (voir tableau ci-dessus)</li>
+                    <li><strong>Suppr ou Backspace :</strong> Effacer une case</li>
+                    <li><strong>Sur tablette :</strong> Le clavier tactile s'affiche automatiquement</li>
+                </ul>
+            </div>
+            
+            <div class="help-section">
+                <h3>🔧 Boutons d'action</h3>
+                <ul>
+                    <li><strong>Nouvelle Grille :</strong> Génère une nouvelle partie avec les mêmes paramètres</li>
+                    <li><strong>Vérifier :</strong> Affiche vos erreurs en rouge pendant 2 secondes puis les efface</li>
+                    <li><strong>Résoudre :</strong> Affiche la solution complète (fin de partie)</li>
+                    <li><strong>Vider :</strong> Efface toutes vos saisies pour recommencer</li>
+                    <li><strong>💾 Sauvegarder :</strong> Enregistre votre partie en cours</li>
+                </ul>
+            </div>
+            
+            <div class="help-tip">
+                <strong>💡 Astuce pour débutants :</strong> Commencez par une grille 9×9 en mode "Corrigé" avec difficulté "Facile". Le jeu vous aidera à comprendre les règles en détectant vos erreurs !
+            </div>
+            
+            <div class="help-tip" style="background: #fff3cd; border-color: #ffc107;">
+                <strong>⚠️ Pour la grille 16×16 avec chiffres :</strong> N'oubliez pas que pour saisir 10 à 16, vous devez utiliser les touches A à G du clavier. Le chiffre correspondant s'affichera automatiquement.
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        const LETTERS = 'ABCDEFGHIJKLMNOP';
-        let SIZE = 16;
-        let BOX_SIZE = 4;
-        let CURRENT_LETTERS = 'ABCDEFGHIJKLMNOP';
-        let USE_NUMBERS = false; // true = chiffres, false = lettres
+<script>
+    const LETTERS = 'ABCDEFGHIJKLMNOP';
+    let SIZE = 16;
+    let BOX_SIZE = 4;
+    let CURRENT_LETTERS = 'ABCDEFGHIJKLMNOP';
+    let USE_NUMBERS = false; // true = chiffres, false = lettres
+    
+    // Variables globales
+    let grid = [];
+    let solution = [];
+    let initialGrid = [];
+    let selectedCell = null;
+    let players = [];
+    let currentPlayer = null;
+    let stepByStepMode = false;
+    let errorMode = false;
+    let correctedMode = false;
+    let currentHint = null;
+    let ariadneMode = false;
+    let ariodneCandidates = [];
+    let errorCount = 0;
+    let errorCells = [];
+    let gameStartTime = null;
+    let currentGridSize = 16;
+    let scoreRecorded = false; // Flag pour éviter les doublons
+    let totalElapsedTime = 0; // Temps total en secondes (cumulé même après pause)
+    
+    // Grille de base pré-générée 16×16
+    const BASE_SOLUTION_16 = [
+        [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        [4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3],
+        [8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7],
+        [12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11],
+        [1,2,3,0,5,6,7,4,9,10,11,8,13,14,15,12],
+        [5,6,7,4,9,10,11,8,13,14,15,12,1,2,3,0],
+        [9,10,11,8,13,14,15,12,1,2,3,0,5,6,7,4],
+        [13,14,15,12,1,2,3,0,5,6,7,4,9,10,11,8],
+        [2,3,0,1,6,7,4,5,10,11,8,9,14,15,12,13],
+        [6,7,4,5,10,11,8,9,14,15,12,13,2,3,0,1],
+        [10,11,8,9,14,15,12,13,2,3,0,1,6,7,4,5],
+        [14,15,12,13,2,3,0,1,6,7,4,5,10,11,8,9],
+        [3,0,1,2,7,4,5,6,11,8,9,10,15,12,13,14],
+        [7,4,5,6,11,8,9,10,15,12,13,14,3,0,1,2],
+        [11,8,9,10,15,12,13,14,3,0,1,2,7,4,5,6],
+        [15,12,13,14,3,0,1,2,7,4,5,6,11,8,9,10]
+    ];
+    
+    // Grille de base pré-générée 9×9
+    const BASE_SOLUTION_9 = [
+        [0,1,2,3,4,5,6,7,8],
+        [3,4,5,6,7,8,0,1,2],
+        [6,7,8,0,1,2,3,4,5],
+        [1,2,3,4,5,6,7,8,0],
+        [4,5,6,7,8,0,1,2,3],
+        [7,8,0,1,2,3,4,5,6],
+        [2,3,4,5,6,7,8,0,1],
+        [5,6,7,8,0,1,2,3,4],
+        [8,0,1,2,3,4,5,6,7]
+    ];
+    
+    // ===== GESTION DES JOUEURS =====
+    
+    function loadPlayers() {
+        const saved = localStorage.getItem('alphadoku_players');
+        if (saved) {
+            players = JSON.parse(saved);
+            updatePlayerList();
+        }
+    }
+    
+    function savePlayers() {
+        localStorage.setItem('alphadoku_players', JSON.stringify(players));
+    }
+    
+    function addPlayer() {
+        const nameInput = document.getElementById('newPlayerName');
+        const name = nameInput.value.trim();
         
-        // Variables globales
-        let grid = [];
-        let solution = [];
-        let initialGrid = [];
-        let selectedCell = null;
-        let players = [];
-        let currentPlayer = null;
-        let stepByStepMode = false;
-        let errorMode = false;
-        let correctedMode = false;
-        let currentHint = null;
-        let ariadneMode = false;
-        let ariodneCandidates = [];
-        let errorCount = 0;
-        let errorCells = [];
-        let gameStartTime = null;
-        let currentGridSize = 16;
-        let scoreRecorded = false; // Flag pour éviter les doublons
-        
-        // Grille de base pré-générée 16×16
-        const BASE_SOLUTION_16 = [
-            [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
-            [4,5,6,7,8,9,10,11,12,13,14,15,0,1,2,3],
-            [8,9,10,11,12,13,14,15,0,1,2,3,4,5,6,7],
-            [12,13,14,15,0,1,2,3,4,5,6,7,8,9,10,11],
-            [1,2,3,0,5,6,7,4,9,10,11,8,13,14,15,12],
-            [5,6,7,4,9,10,11,8,13,14,15,12,1,2,3,0],
-            [9,10,11,8,13,14,15,12,1,2,3,0,5,6,7,4],
-            [13,14,15,12,1,2,3,0,5,6,7,4,9,10,11,8],
-            [2,3,0,1,6,7,4,5,10,11,8,9,14,15,12,13],
-            [6,7,4,5,10,11,8,9,14,15,12,13,2,3,0,1],
-            [10,11,8,9,14,15,12,13,2,3,0,1,6,7,4,5],
-            [14,15,12,13,2,3,0,1,6,7,4,5,10,11,8,9],
-            [3,0,1,2,7,4,5,6,11,8,9,10,15,12,13,14],
-            [7,4,5,6,11,8,9,10,15,12,13,14,3,0,1,2],
-            [11,8,9,10,15,12,13,14,3,0,1,2,7,4,5,6],
-            [15,12,13,14,3,0,1,2,7,4,5,6,11,8,9,10]
-        ];
-        
-        // Grille de base pré-générée 9×9
-        const BASE_SOLUTION_9 = [
-            [0,1,2,3,4,5,6,7,8],
-            [3,4,5,6,7,8,0,1,2],
-            [6,7,8,0,1,2,3,4,5],
-            [1,2,3,4,5,6,7,8,0],
-            [4,5,6,7,8,0,1,2,3],
-            [7,8,0,1,2,3,4,5,6],
-            [2,3,4,5,6,7,8,0,1],
-            [5,6,7,8,0,1,2,3,4],
-            [8,0,1,2,3,4,5,6,7]
-        ];
-        
-        // ===== GESTION DES JOUEURS =====
-        
-        function loadPlayers() {
-            const saved = localStorage.getItem('alphadoku_players');
-            if (saved) {
-                players = JSON.parse(saved);
-                updatePlayerList();
-            }
+        if (!name) {
+            alert('Veuillez entrer un nom');
+            return;
         }
         
-        function savePlayers() {
-            localStorage.setItem('alphadoku_players', JSON.stringify(players));
+        if (players.find(p => p.name === name)) {
+            alert('Ce joueur existe déjà');
+            return;
         }
         
-        function addPlayer() {
-            const nameInput = document.getElementById('newPlayerName');
-            const name = nameInput.value.trim();
-            
-            if (!name) {
-                alert('Veuillez entrer un nom');
-                return;
+        players.push({
+            name: name,
+            gamesPlayed: 0,
+            gamesWon: 0,
+            savedGame: null,
+            scores: [] // {size, difficulty, time, date}
+        });
+        
+        savePlayers();
+        updatePlayerList();
+        nameInput.value = '';
+    }
+    
+    function selectPlayer(name) {
+        // Désélectionner tous
+        document.querySelectorAll('.player-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        
+        // Sélectionner le nouveau
+        const player = players.find(p => p.name === name);
+        if (player) {
+            currentPlayer = player;
+            document.querySelector(`[data-player="${name}"]`).classList.add('selected');
+        }
+    }
+    
+    function deletePlayer(name, event) {
+        event.stopPropagation();
+        if (confirm(`Supprimer ${name} ?`)) {
+            players = players.filter(p => p.name !== name);
+            if (currentPlayer && currentPlayer.name === name) {
+                currentPlayer = null;
             }
-            
-            if (players.find(p => p.name === name)) {
-                alert('Ce joueur existe déjà');
-                return;
-            }
-            
-            players.push({
-                name: name,
-                gamesPlayed: 0,
-                gamesWon: 0,
-                savedGame: null,
-                scores: [] // {size, difficulty, time, date}
-            });
-            
             savePlayers();
             updatePlayerList();
-            nameInput.value = '';
+        }
+    }
+    
+    function updatePlayerList() {
+        const listEl = document.getElementById('playerList');
+        
+        if (players.length === 0) {
+            listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Aucun joueur enregistré</div>';
+            return;
         }
         
-        function selectPlayer(name) {
-            // Désélectionner tous
-            document.querySelectorAll('.player-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            
-            // Sélectionner le nouveau
-            const player = players.find(p => p.name === name);
-            if (player) {
-                currentPlayer = player;
-                document.querySelector(`[data-player="${name}"]`).classList.add('selected');
-            }
+        listEl.innerHTML = '';
+        players.forEach(player => {
+            const div = document.createElement('div');
+            div.className = 'player-item';
+            div.dataset.player = player.name;
+            div.onclick = () => selectPlayer(player.name);
+            div.innerHTML = `
+                <div>
+                    <div><strong>${player.name}</strong></div>
+                    <div class="player-stats">Parties: ${player.gamesPlayed} | Gagnées: ${player.gamesWon}</div>
+                </div>
+                <span class="delete-btn" onclick="deletePlayer('${player.name}', event)">✕</span>
+            `;
+            listEl.appendChild(div);
+        });
+    }
+    
+    // ===== NAVIGATION =====
+    
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+    
+    function startGame() {
+        if (!currentPlayer) {
+            alert('Veuillez sélectionner un joueur');
+            return;
         }
         
-        function deletePlayer(name, event) {
-            event.stopPropagation();
-            if (confirm(`Supprimer ${name} ?`)) {
-                players = players.filter(p => p.name !== name);
-                if (currentPlayer && currentPlayer.name === name) {
-                    currentPlayer = null;
-                }
-                savePlayers();
-                updatePlayerList();
-            }
+        const gridType = document.querySelector('input[name="gridType"]:checked').value;
+        const difficulty = document.getElementById('configDifficulty').value;
+        const mode = document.querySelector('input[name="gameMode"]:checked').value;
+        
+        // Configurer la taille et le type selon le choix
+        if (gridType === '9-letters') {
+            currentGridSize = 9;
+            SIZE = 9;
+            BOX_SIZE = 3;
+            CURRENT_LETTERS = 'ABCDEFGHI';
+            USE_NUMBERS = false;
+        } else if (gridType === '9-numbers') {
+            currentGridSize = 9;
+            SIZE = 9;
+            BOX_SIZE = 3;
+            CURRENT_LETTERS = '123456789';
+            USE_NUMBERS = true;
+        } else if (gridType === '16-letters') {
+            currentGridSize = 16;
+            SIZE = 16;
+            BOX_SIZE = 4;
+            CURRENT_LETTERS = 'ABCDEFGHIJKLMNOP';
+            USE_NUMBERS = false;
+        } else if (gridType === '16-numbers') {
+            currentGridSize = 16;
+            SIZE = 16;
+            BOX_SIZE = 4;
+            CURRENT_LETTERS = '123456789ABCDEFG'; // 1-16 en hexa pour simplicité d'affichage
+            USE_NUMBERS = true;
         }
         
-        function updatePlayerList() {
-            const listEl = document.getElementById('playerList');
-            
-            if (players.length === 0) {
-                listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Aucun joueur enregistré</div>';
-                return;
-            }
-            
-            listEl.innerHTML = '';
-            players.forEach(player => {
-                const div = document.createElement('div');
-                div.className = 'player-item';
-                div.dataset.player = player.name;
-                div.onclick = () => selectPlayer(player.name);
-                div.innerHTML = `
-                    <div>
-                        <div><strong>${player.name}</strong></div>
-                        <div class="player-stats">Parties: ${player.gamesPlayed} | Gagnées: ${player.gamesWon}</div>
-                    </div>
-                    <span class="delete-btn" onclick="deletePlayer('${player.name}', event)">✕</span>
-                `;
-                listEl.appendChild(div);
-            });
+        // Configurer le mode
+        stepByStepMode = (mode === 'stepByStep');
+        errorMode = (mode === 'errors');
+        correctedMode = (mode === 'corrected');
+        errorCount = 0;
+        errorCells = [];
+        
+        // Démarrer le chronomètre
+        gameStartTime = Date.now();
+        totalElapsedTime = 0; // Nouvelle partie = remise à zéro
+        scoreRecorded = false; // Nouvelle partie = flag à false
+        
+        // Afficher les infos
+        document.getElementById('playerName').textContent = currentPlayer.name;
+        document.getElementById('gameDifficulty').textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+        document.getElementById('gameMode').textContent = 
+            mode === 'normal' ? 'Normal' :
+            mode === 'corrected' ? 'Corrigé' :
+            mode === 'stepByStep' ? 'Pas à pas' : 
+            'Mode 3 erreurs';
+        
+        // Générer la grille
+        generateGame(difficulty);
+        
+        // Aller à l'écran de jeu
+        showScreen('gameScreen');
+        
+        if (stepByStepMode) {
+            findNextHint();
         }
+    }
+    
+    function newGameFromScreen() {
+        const difficulty = document.getElementById('gameDifficulty').textContent.toLowerCase();
+        scoreRecorded = false; // Nouvelle partie = flag à false
+        totalElapsedTime = 0; // Nouvelle partie = remise à zéro
+        generateGame(difficulty);
         
-        // ===== NAVIGATION =====
-        
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
+        if (stepByStepMode) {
+            findNextHint();
         }
-        
-        function startGame() {
-            if (!currentPlayer) {
-                alert('Veuillez sélectionner un joueur');
-                return;
-            }
-            
-            const gridType = document.querySelector('input[name="gridType"]:checked').value;
-            const difficulty = document.getElementById('configDifficulty').value;
-            const mode = document.querySelector('input[name="gameMode"]:checked').value;
-            
-            // Configurer la taille et le type selon le choix
-            if (gridType === '9-letters') {
-                currentGridSize = 9;
-                SIZE = 9;
-                BOX_SIZE = 3;
-                CURRENT_LETTERS = 'ABCDEFGHI';
-                USE_NUMBERS = false;
-            } else if (gridType === '9-numbers') {
-                currentGridSize = 9;
-                SIZE = 9;
-                BOX_SIZE = 3;
-                CURRENT_LETTERS = '123456789';
-                USE_NUMBERS = true;
-            } else if (gridType === '16-letters') {
-                currentGridSize = 16;
-                SIZE = 16;
-                BOX_SIZE = 4;
-                CURRENT_LETTERS = 'ABCDEFGHIJKLMNOP';
-                USE_NUMBERS = false;
-            } else if (gridType === '16-numbers') {
-                currentGridSize = 16;
-                SIZE = 16;
-                BOX_SIZE = 4;
-                CURRENT_LETTERS = '123456789ABCDEFG'; // 1-16 en hexa pour simplicité d'affichage
-                USE_NUMBERS = true;
-            }
-            
-            // Configurer le mode
-            stepByStepMode = (mode === 'stepByStep');
-            errorMode = (mode === 'errors');
-            correctedMode = (mode === 'corrected');
-            errorCount = 0;
-            errorCells = [];
-            
-            // Démarrer le chronomètre
-            gameStartTime = Date.now();
-            scoreRecorded = false; // Nouvelle partie = flag à false
-            
-            // Afficher les infos
-            document.getElementById('playerName').textContent = currentPlayer.name;
-            document.getElementById('gameDifficulty').textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-            document.getElementById('gameMode').textContent = 
-                mode === 'normal' ? 'Normal' :
-                mode === 'corrected' ? 'Corrigé' :
-                mode === 'stepByStep' ? 'Pas à pas' : 
-                'Mode 3 erreurs';
-            
-            // Générer la grille
-            generateGame(difficulty);
-            
-            // Aller à l'écran de jeu
-            showScreen('gameScreen');
-            
-            if (stepByStepMode) {
-                findNextHint();
-            }
-        }
-        
-        function newGameFromScreen() {
-            const difficulty = document.getElementById('gameDifficulty').textContent.toLowerCase();
-            scoreRecorded = false; // Nouvelle partie = flag à false
-            generateGame(difficulty);
-            
-            if (stepByStepMode) {
-                findNextHint();
-            }
-        }
-        
-        function backToConfig() {
-            if (confirm('Retourner à la configuration ? (Pensez à sauvegarder)')) {
-                showScreen('configScreen');
-            }
-        }
-        
-        function showScores() {
-            updateScoresDisplay();
-            showScreen('scoresScreen');
-        }
-        
-        function backToConfigFromScores() {
+    }
+    
+    function backToConfig() {
+        if (confirm('Retourner à la configuration ? (Pensez à sauvegarder)')) {
             showScreen('configScreen');
         }
-        
-        function showHelp() {
-            showScreen('helpScreen');
+    }
+    
+    function showScores() {
+        updateScoresDisplay();
+        showScreen('scoresScreen');
+    }
+    
+    function backToConfigFromScores() {
+        showScreen('configScreen');
+    }
+    
+    function showHelp() {
+        showScreen('helpScreen');
+    }
+    
+    function backToConfigFromHelp() {
+        showScreen('configScreen');
+    }
+    
+    function loadSavedGame() {
+        if (!currentPlayer) {
+            alert('Veuillez sélectionner un joueur');
+            return;
         }
         
-        function backToConfigFromHelp() {
-            showScreen('configScreen');
+        if (!currentPlayer.savedGame) {
+            alert('Aucune partie sauvegardée');
+            return;
         }
         
-        function loadSavedGame() {
-            if (!currentPlayer) {
-                alert('Veuillez sélectionner un joueur');
-                return;
-            }
-            
-            if (!currentPlayer.savedGame) {
-                alert('Aucune partie sauvegardée');
-                return;
-            }
-            
-            const gameState = currentPlayer.savedGame;
-            
-            // IMPORTANT: Configurer la taille AVANT de charger la grille
-            currentGridSize = gameState.size || 16;
-            SIZE = currentGridSize;
-            BOX_SIZE = SIZE === 9 ? 3 : 4;
-            USE_NUMBERS = gameState.useNumbers || false;
-            
-            if (USE_NUMBERS) {
-                CURRENT_LETTERS = SIZE === 9 ? '123456789' : '123456789ABCDEFG';
-            } else {
-                CURRENT_LETTERS = SIZE === 9 ? 'ABCDEFGHI' : 'ABCDEFGHIJKLMNOP';
-            }
-            
-            grid = gameState.grid.map(row => [...row]);
-            solution = gameState.solution.map(row => [...row]);
-            initialGrid = gameState.initialGrid.map(row => [...row]);
-            stepByStepMode = gameState.stepByStepMode || false;
-            errorMode = gameState.errorMode || false;
-            correctedMode = gameState.correctedMode || false;
-            errorCount = gameState.errorCount || 0;
-            errorCells = gameState.errorCells || [];
-            gameStartTime = gameState.startTime || Date.now();
-            scoreRecorded = gameState.scoreRecorded || false; // Charger le flag
-            
-            document.getElementById('playerName').textContent = currentPlayer.name;
-            document.getElementById('gameDifficulty').textContent = gameState.difficulty || 'Moyen';
-            document.getElementById('gameMode').textContent = 
-                stepByStepMode ? 'Pas à pas' : 
-                errorMode ? 'Mode 3 erreurs' :
-                correctedMode ? 'Corrigé' :
-                'Normal';
-            
-            currentHint = null;
-            ariadneMode = false;
-            ariodneCandidates = [];
-            selectedCell = null;
-            
-            // Initialiser et afficher la grille
-            initGrid();
-            updateErrorCounter();
-            displayGrid();
-            showScreen('gameScreen');
-            showMessage('Partie rechargée !', 'success');
+        const gameState = currentPlayer.savedGame;
+        
+        // IMPORTANT: Configurer la taille AVANT de charger la grille
+        currentGridSize = gameState.size || 16;
+        SIZE = currentGridSize;
+        BOX_SIZE = SIZE === 9 ? 3 : 4;
+        USE_NUMBERS = gameState.useNumbers || false;
+        
+        if (USE_NUMBERS) {
+            CURRENT_LETTERS = SIZE === 9 ? '123456789' : '123456789ABCDEFG';
+        } else {
+            CURRENT_LETTERS = SIZE === 9 ? 'ABCDEFGHI' : 'ABCDEFGHIJKLMNOP';
         }
         
-        // ===== GÉNÉRATION DE LA GRILLE =====
+        grid = gameState.grid.map(row => [...row]);
+        solution = gameState.solution.map(row => [...row]);
+        initialGrid = gameState.initialGrid.map(row => [...row]);
+        stepByStepMode = gameState.stepByStepMode || false;
+        errorMode = gameState.errorMode || false;
+        correctedMode = gameState.correctedMode || false;
+        errorCount = gameState.errorCount || 0;
+        errorCells = gameState.errorCells || [];
+        totalElapsedTime = gameState.totalElapsedTime || 0; // Charger le temps écoulé
+        gameStartTime = Date.now(); // Redémarrer le chrono maintenant
+        scoreRecorded = gameState.scoreRecorded || false; // Charger le flag
         
-        function shuffleArray(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
+        document.getElementById('playerName').textContent = currentPlayer.name;
+        document.getElementById('gameDifficulty').textContent = gameState.difficulty || 'Moyen';
+        document.getElementById('gameMode').textContent = 
+            stepByStepMode ? 'Pas à pas' : 
+            errorMode ? 'Mode 3 erreurs' :
+            correctedMode ? 'Corrigé' :
+            'Normal';
+        
+        currentHint = null;
+        ariadneMode = false;
+        ariodneCandidates = [];
+        selectedCell = null;
+        
+        // Initialiser et afficher la grille
+        initGrid();
+        updateErrorCounter();
+        displayGrid();
+        createVirtualKeyboard(); // Créer le clavier virtuel
+        showScreen('gameScreen');
+        showMessage('Partie rechargée !', 'success');
+    }
+    
+    // ===== GÉNÉRATION DE LA GRILLE =====
+    
+    function shuffleArray(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         }
+        return arr;
+    }
+    
+    function generateGame(difficulty) {
+        const BASE_SOLUTION = SIZE === 9 ? BASE_SOLUTION_9 : BASE_SOLUTION_16;
         
-        function generateGame(difficulty) {
-            const BASE_SOLUTION = SIZE === 9 ? BASE_SOLUTION_9 : BASE_SOLUTION_16;
-            
-            const permutation = shuffleArray([...Array(SIZE).keys()]);
-            const fullGrid = BASE_SOLUTION.map(row => row.map(val => permutation[val]));
-            
-            solution = fullGrid.map(row => [...row]);
-            
-            const cellsToRemove = SIZE === 9 ? {
-                'facile': 30,
-                'moyen': 40,
-                'difficile': 50,
-                'expert': 60
-            }[difficulty] : {
-                'facile': 60,
-                'moyen': 90,
-                'difficile': 120,
-                'expert': 150
-            }[difficulty];
-            
-            const puzzle = fullGrid.map(row => [...row]);
-            const positions = [];
-            for (let r = 0; r < SIZE; r++) {
-                for (let c = 0; c < SIZE; c++) {
-                    positions.push({r, c});
-                }
-            }
-            
-            shuffleArray(positions).slice(0, cellsToRemove).forEach(({r, c}) => {
-                puzzle[r][c] = -1;
-            });
-            
-            grid = puzzle;
-            initialGrid = puzzle.map(row => [...row]);
-            errorCount = 0;
-            errorCells = [];
-            selectedCell = null;
-            gameStartTime = Date.now();
-            
-            initGrid();
-            displayGrid();
-            updateErrorCounter();
-            showMessage('Nouvelle grille générée ! Bonne chance ! 🎮');
-        }
+        const permutation = shuffleArray([...Array(SIZE).keys()]);
+        const fullGrid = BASE_SOLUTION.map(row => row.map(val => permutation[val]));
         
-        // ===== AFFICHAGE =====
+        solution = fullGrid.map(row => [...row]);
         
-        function valueToDisplay(value) {
-            if (USE_NUMBERS) {
-                // Pour les chiffres, afficher 1-9 ou 1-16
-                return (value + 1).toString();
-            } else {
-                // Pour les lettres
-                return CURRENT_LETTERS[value];
+        const cellsToRemove = SIZE === 9 ? {
+            'facile': 30,
+            'moyen': 40,
+            'difficile': 50,
+            'expert': 60
+        }[difficulty] : {
+            'facile': 60,
+            'moyen': 90,
+            'difficile': 120,
+            'expert': 150
+        }[difficulty];
+        
+        const puzzle = fullGrid.map(row => [...row]);
+        const positions = [];
+        for (let r = 0; r < SIZE; r++) {
+            for (let c = 0; c < SIZE; c++) {
+                positions.push({r, c});
             }
         }
         
-        function initGrid() {
-            const gridEl = document.getElementById('sudoku-grid');
-            gridEl.innerHTML = '';
+        shuffleArray(positions).slice(0, cellsToRemove).forEach(({r, c}) => {
+            puzzle[r][c] = -1;
+        });
+        
+        grid = puzzle;
+        initialGrid = puzzle.map(row => [...row]);
+        errorCount = 0;
+        errorCells = [];
+        selectedCell = null;
+        gameStartTime = Date.now();
+        
+        initGrid();
+        displayGrid();
+        updateErrorCounter();
+        createVirtualKeyboard(); // Créer le clavier virtuel
+        showMessage('Nouvelle grille générée ! Bonne chance ! 🎮');
+    }
+    
+    // ===== CLAVIER VIRTUEL =====
+    
+    function createVirtualKeyboard() {
+        const keyboard = document.getElementById('virtualKeyboard');
+        keyboard.innerHTML = '';
+        
+        // Créer les touches pour chaque symbole
+        for (let i = 0; i < SIZE; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'key-btn';
+            btn.textContent = valueToDisplay(i);
+            btn.dataset.value = i;
+            btn.type = 'button'; // Éviter la soumission de formulaire
             
-            // Adapter le style selon la taille
-            const cellSize = SIZE === 9 ? '45px' : '35px';
-            gridEl.style.gridTemplateColumns = `repeat(${SIZE}, ${cellSize})`;
-            
-            for (let i = 0; i < SIZE * SIZE; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.index = i;
-                cell.style.width = cellSize;
-                cell.style.height = cellSize;
-                cell.onclick = () => selectCellAt(i);
-                gridEl.appendChild(cell);
-            }
-            
-            document.addEventListener('keydown', handleKeyPress);
-            
-            const hiddenInput = document.getElementById('hidden-input');
-            hiddenInput.addEventListener('input', (e) => {
-                if (!selectedCell) return;
-                const value = e.target.value.toUpperCase();
-                if (value.length > 0) {
-                    let letterIndex = -1;
-                    
-                    if (USE_NUMBERS) {
-                        // Pour les chiffres, convertir la saisie en index (1->0, 2->1, etc.)
-                        const num = parseInt(value);
-                        if (!isNaN(num) && num >= 1 && num <= SIZE) {
-                            letterIndex = num - 1;
-                        }
-                    } else {
-                        // Pour les lettres
-                        letterIndex = CURRENT_LETTERS.indexOf(value[0]);
-                    }
-                    
-                    if (letterIndex !== -1) {
-                        placeLetter(selectedCell.row, selectedCell.col, letterIndex);
-                    }
-                    e.target.value = '';
+            btn.onclick = () => {
+                if (selectedCell && initialGrid[selectedCell.row][selectedCell.col] === -1) {
+                    placeLetter(selectedCell.row, selectedCell.col, i);
+                    updateKeyboardState();
                 }
-            });
+            };
             
-            hiddenInput.addEventListener('keydown', (e) => {
-                if (!selectedCell) return;
-                if (e.key === 'Backspace' || e.key === 'Delete') {
-                    grid[selectedCell.row][selectedCell.col] = -1;
-                    displayGrid();
-                    e.preventDefault();
-                }
-            });
+            keyboard.appendChild(btn);
         }
         
-        function displayGrid() {
-            const cells = document.querySelectorAll('.cell');
-            
-            cells.forEach((cell, index) => {
-                const row = Math.floor(index / SIZE);
-                const col = index % SIZE;
-                const value = grid[row][col];
-                
-                cell.className = 'cell';
-                cell.textContent = '';
-                
-                // Bordures épaisses selon la taille
-                if ((col + 1) % BOX_SIZE === 0 && col < SIZE - 1) {
-                    cell.style.borderRight = '3px solid #333';
-                }
-                if ((row + 1) % BOX_SIZE === 0 && row < SIZE - 1) {
-                    cell.style.borderBottom = '3px solid #333';
-                }
-                
-                if (initialGrid[row][col] !== -1) {
-                    cell.classList.add('initial');
-                    cell.textContent = valueToDisplay(value);
-                } else if (value !== -1) {
-                    cell.classList.add('user-input');
-                    cell.textContent = valueToDisplay(value);
-                }
-                
-                if (selectedCell && selectedCell.row === row && selectedCell.col === col) {
-                    cell.classList.add('selected');
-                    if (grid[row][col] === -1 && !currentHint && !ariadneMode) {
-                        cell.classList.add('empty');
-                    }
-                }
-                
-                if (stepByStepMode && currentHint && currentHint.row === row && currentHint.col === col) {
-                    cell.classList.add('hint');
-                    cell.textContent = valueToDisplay(currentHint.value);
-                }
-                
-                if (ariadneMode && ariodneCandidates.some(c => c.row === row && c.col === col)) {
-                    const candidate = ariodneCandidates.find(c => c.row === row && c.col === col);
-                    cell.classList.add('candidates');
-                    cell.textContent = candidate.letters.join('');
-                }
-                
-                if (errorCount >= 3 && errorCells.some(ec => ec.row === row && ec.col === col)) {
-                    cell.classList.add('error');
-                }
-            });
-        }
-        
-        function selectCellAt(index) {
-            const row = Math.floor(index / SIZE);
-            const col = index % SIZE;
-            
-            if (initialGrid[row][col] !== -1) {
-                showMessage('Cette case fait partie de la grille initiale !', 'warning');
-                return;
-            }
-            
-            selectedCell = {row, col, index};
-            displayGrid();
-            
-            const hiddenInput = document.getElementById('hidden-input');
-            hiddenInput.value = '';
-            hiddenInput.focus();
-        }
-        
-        function handleKeyPress(e) {
-            if (!selectedCell) return;
-            
-            let letterIndex = -1;
-            
-            if (USE_NUMBERS) {
-                // Pour les chiffres
-                const num = parseInt(e.key);
-                if (!isNaN(num) && num >= 1 && num <= SIZE) {
-                    letterIndex = num - 1;
-                }
-                // Pour 10-16, accepter aussi A-F
-                if (SIZE === 16 && letterIndex === -1) {
-                    const key = e.key.toUpperCase();
-                    if (key >= 'A' && key <= 'F') {
-                        letterIndex = 9 + (key.charCodeAt(0) - 'A'.charCodeAt(0));
-                    }
-                }
-            } else {
-                // Pour les lettres
-                const key = e.key.toUpperCase();
-                letterIndex = CURRENT_LETTERS.indexOf(key);
-            }
-            
-            if (letterIndex !== -1) {
-                placeLetter(selectedCell.row, selectedCell.col, letterIndex);
-            } else if (e.key === 'Backspace' || e.key === 'Delete') {
+        // Ajouter une touche Effacer
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'key-btn delete-key';
+        deleteBtn.textContent = '⌫ Effacer';
+        deleteBtn.type = 'button';
+        deleteBtn.onclick = () => {
+            if (selectedCell && initialGrid[selectedCell.row][selectedCell.col] === -1) {
                 grid[selectedCell.row][selectedCell.col] = -1;
                 displayGrid();
+                updateKeyboardState();
+            }
+        };
+        
+        keyboard.appendChild(deleteBtn);
+        
+        // Mettre à jour l'état initial
+        updateKeyboardState();
+    }
+    
+    function updateKeyboardState() {
+        const keyboard = document.getElementById('virtualKeyboard');
+        if (!keyboard) return;
+        
+        const buttons = keyboard.querySelectorAll('.key-btn:not(.delete-key)');
+        
+        // Compter combien de fois chaque valeur apparaît dans la grille
+        const counts = new Array(SIZE).fill(0);
+        
+        for (let row = 0; row < SIZE; row++) {
+            for (let col = 0; col < SIZE; col++) {
+                const value = grid[row][col];
+                if (value !== -1) {
+                    counts[value]++;
+                }
             }
         }
         
-        // ===== LOGIQUE DU JEU =====
+        // Désactiver les touches si la valeur est utilisée SIZE fois
+        buttons.forEach(btn => {
+            const value = parseInt(btn.dataset.value);
+            if (counts[value] >= SIZE) {
+                btn.disabled = true;
+            } else {
+                btn.disabled = false;
+            }
+        });
+    }
+    
+    // ===== AFFICHAGE =====
+    
+    function valueToDisplay(value) {
+        if (USE_NUMBERS) {
+            // Pour les chiffres, afficher 1-9 ou 1-16
+            return (value + 1).toString();
+        } else {
+            // Pour les lettres
+            return CURRENT_LETTERS[value];
+        }
+    }
+    
+    function initGrid() {
+        const gridEl = document.getElementById('sudoku-grid');
+        gridEl.innerHTML = '';
         
-        function isValid(grid, row, col, num) {
-            for (let c = 0; c < SIZE; c++) {
-                if (grid[row][c] === num) return false;
-            }
-            for (let r = 0; r < SIZE; r++) {
-                if (grid[r][col] === num) return false;
-            }
-            const boxRow = Math.floor(row / BOX_SIZE) * BOX_SIZE;
-            const boxCol = Math.floor(col / BOX_SIZE) * BOX_SIZE;
-            for (let r = boxRow; r < boxRow + BOX_SIZE; r++) {
-                for (let c = boxCol; c < boxCol + BOX_SIZE; c++) {
-                    if (grid[r][c] === num) return false;
-                }
-            }
-            return true;
+        // Adapter le style selon la taille
+        const cellSize = SIZE === 9 ? '45px' : '35px';
+        gridEl.style.gridTemplateColumns = `repeat(${SIZE}, ${cellSize})`;
+        
+        for (let i = 0; i < SIZE * SIZE; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.index = i;
+            cell.style.width = cellSize;
+            cell.style.height = cellSize;
+            cell.onclick = () => selectCellAt(i);
+            gridEl.appendChild(cell);
         }
         
-        function findDuplicates(row, col, value) {
-            const duplicates = [];
-            
-            for (let c = 0; c < SIZE; c++) {
-                if (c !== col && grid[row][c] === value) {
-                    duplicates.push({row, col: c});
-                }
-            }
-            
-            for (let r = 0; r < SIZE; r++) {
-                if (r !== row && grid[r][col] === value) {
-                    duplicates.push({row: r, col});
-                }
-            }
-            
-            const boxRow = Math.floor(row / BOX_SIZE) * BOX_SIZE;
-            const boxCol = Math.floor(col / BOX_SIZE) * BOX_SIZE;
-            for (let r = boxRow; r < boxRow + BOX_SIZE; r++) {
-                for (let c = boxCol; c < boxCol + BOX_SIZE; c++) {
-                    if ((r !== row || c !== col) && grid[r][c] === value) {
-                        const isDuplicate = duplicates.some(d => d.row === r && d.col === c);
-                        if (!isDuplicate) duplicates.push({row: r, col: c});
-                    }
-                }
-            }
-            
-            return duplicates;
-        }
+        document.addEventListener('keydown', handleKeyPress);
         
-        function placeLetter(row, col, letterIndex) {
-            // Mode 3 erreurs
-            if (errorMode) {
-                if (solution[row][col] !== letterIndex) {
-                    const alreadyCounted = errorCells.some(cell => cell.row === row && cell.col === col);
-                    if (!alreadyCounted) {
-                        errorCount++;
-                        errorCells.push({row, col});
-                        updateErrorCounter();
-                        
-                        if (errorCount >= 3) {
-                            grid[row][col] = letterIndex;
-                            displayGrid();
-                            showMessage('3 erreurs détectées !', 'error');
-                            setTimeout(() => {
-                                if (confirm('Voulez-vous repartir de la grille vierge ?')) {
-                                    clear();
-                                } else {
-                                    showMessage('Corrigez les erreurs en rouge', 'warning');
-                                }
-                            }, 1000);
-                            return;
-                        }
-                        
-                        showMessage(`Erreur ${errorCount}/3`, 'warning');
+        const hiddenInput = document.getElementById('hidden-input');
+        hiddenInput.addEventListener('input', (e) => {
+            if (!selectedCell) return;
+            const value = e.target.value.toUpperCase();
+            if (value.length > 0) {
+                let letterIndex = -1;
+                
+                if (USE_NUMBERS) {
+                    // Pour les chiffres, convertir la saisie en index (1->0, 2->1, etc.)
+                    const num = parseInt(value);
+                    if (!isNaN(num) && num >= 1 && num <= SIZE) {
+                        letterIndex = num - 1;
                     }
                 } else {
-                    errorCells = errorCells.filter(cell => !(cell.row === row && cell.col === col));
+                    // Pour les lettres
+                    letterIndex = CURRENT_LETTERS.indexOf(value[0]);
                 }
                 
-                grid[row][col] = letterIndex;
+                if (letterIndex !== -1) {
+                    placeLetter(selectedCell.row, selectedCell.col, letterIndex);
+                }
+                e.target.value = '';
+            }
+        });
+        
+        hiddenInput.addEventListener('keydown', (e) => {
+            if (!selectedCell) return;
+            if (e.key === 'Backspace' || e.key === 'Delete') {
+                grid[selectedCell.row][selectedCell.col] = -1;
                 displayGrid();
-                checkWin();
-                return;
+                e.preventDefault();
+            }
+        });
+    }
+    
+    function displayGrid() {
+        const cells = document.querySelectorAll('.cell');
+        
+        cells.forEach((cell, index) => {
+            const row = Math.floor(index / SIZE);
+            const col = index % SIZE;
+            const value = grid[row][col];
+            
+            cell.className = 'cell';
+            cell.textContent = '';
+            
+            // Bordures épaisses selon la taille
+            if ((col + 1) % BOX_SIZE === 0 && col < SIZE - 1) {
+                cell.style.borderRight = '3px solid #333';
+            }
+            if ((row + 1) % BOX_SIZE === 0 && row < SIZE - 1) {
+                cell.style.borderBottom = '3px solid #333';
             }
             
-            // Mode normal : aucune correction, on place directement
-            // Mode corrigé : vérification des doublons
-            if (correctedMode) {
-                const duplicates = findDuplicates(row, col, letterIndex);
-                
-                if (duplicates.length > 0) {
-                    grid[row][col] = letterIndex;
-                    displayGrid();
-                    
-                    const cells = document.querySelectorAll('.cell');
-                    duplicates.forEach(dup => {
-                        const idx = dup.row * SIZE + dup.col;
-                        cells[idx].classList.add('error');
-                    });
-                    
-                    setTimeout(() => {
-                        grid[row][col] = -1;
-                        displayGrid();
-                    }, 1000);
-                    
-                    showMessage(`Doublon détecté ! ${valueToDisplay(letterIndex)} existe déjà.`, 'warning');
-                    return;
+            if (initialGrid[row][col] !== -1) {
+                cell.classList.add('initial');
+                cell.textContent = valueToDisplay(value);
+            } else if (value !== -1) {
+                cell.classList.add('user-input');
+                cell.textContent = valueToDisplay(value);
+            }
+            
+            if (selectedCell && selectedCell.row === row && selectedCell.col === col) {
+                cell.classList.add('selected');
+                if (grid[row][col] === -1 && !currentHint && !ariadneMode) {
+                    cell.classList.add('empty');
                 }
             }
             
-            // Placer la lettre (mode normal ou mode corrigé sans doublon)
-            grid[row][col] = letterIndex;
-            
-            if (stepByStepMode && currentHint) {
-                if (currentHint.row === row && currentHint.col === col && currentHint.value === letterIndex) {
-                    showMessage('Bravo ! Lettre correcte.', 'success');
-                    currentHint = null;
-                    ariadneMode = false;
-                    setTimeout(() => findNextHint(), 1000);
-                }
+            if (stepByStepMode && currentHint && currentHint.row === row && currentHint.col === col) {
+                cell.classList.add('hint');
+                cell.textContent = valueToDisplay(currentHint.value);
             }
             
-            if (ariadneMode && ariodneCandidates.length > 0) {
+            if (ariadneMode && ariodneCandidates.some(c => c.row === row && c.col === col)) {
                 const candidate = ariodneCandidates.find(c => c.row === row && c.col === col);
-                if (candidate && candidate.letters.includes(valueToDisplay(letterIndex))) {
-                    const correctLetter = valueToDisplay(solution[row][col]);
-                    if (valueToDisplay(letterIndex) !== correctLetter) {
-                        showMessage(`Mauvais choix ! La bonne lettre est ${correctLetter}.`, 'warning');
-                    } else {
-                        showMessage('Bon choix !', 'success');
-                        ariadneMode = false;
-                        ariodneCandidates = [];
-                        setTimeout(() => findNextHint(), 1000);
-                    }
-                }
+                cell.classList.add('candidates');
+                cell.textContent = candidate.letters.join('');
             }
             
+            if (errorCount >= 3 && errorCells.some(ec => ec.row === row && ec.col === col)) {
+                cell.classList.add('error');
+            }
+        });
+    }
+    
+    function selectCellAt(index) {
+        const row = Math.floor(index / SIZE);
+        const col = index % SIZE;
+        
+        if (initialGrid[row][col] !== -1) {
+            showMessage('Cette case fait partie de la grille initiale !', 'warning');
+            return;
+        }
+        
+        selectedCell = {row, col, index};
+        displayGrid();
+        
+        const hiddenInput = document.getElementById('hidden-input');
+        hiddenInput.value = '';
+        hiddenInput.focus();
+    }
+    
+    function handleKeyPress(e) {
+        if (!selectedCell) return;
+        
+        let letterIndex = -1;
+        
+        if (USE_NUMBERS) {
+            // Pour les chiffres
+            const num = parseInt(e.key);
+            if (!isNaN(num) && num >= 1 && num <= SIZE) {
+                letterIndex = num - 1;
+            }
+            // Pour 10-16, accepter aussi A-F
+            if (SIZE === 16 && letterIndex === -1) {
+                const key = e.key.toUpperCase();
+                if (key >= 'A' && key <= 'F') {
+                    letterIndex = 9 + (key.charCodeAt(0) - 'A'.charCodeAt(0));
+                }
+            }
+        } else {
+            // Pour les lettres
+            const key = e.key.toUpperCase();
+            letterIndex = CURRENT_LETTERS.indexOf(key);
+        }
+        
+        if (letterIndex !== -1) {
+            placeLetter(selectedCell.row, selectedCell.col, letterIndex);
+        } else if (e.key === 'Backspace' || e.key === 'Delete') {
+            grid[selectedCell.row][selectedCell.col] = -1;
+            displayGrid();
+        }
+    }
+    
+    // ===== LOGIQUE DU JEU =====
+    
+    function isValid(grid, row, col, num) {
+        for (let c = 0; c < SIZE; c++) {
+            if (grid[row][c] === num) return false;
+        }
+        for (let r = 0; r < SIZE; r++) {
+            if (grid[r][col] === num) return false;
+        }
+        const boxRow = Math.floor(row / BOX_SIZE) * BOX_SIZE;
+        const boxCol = Math.floor(col / BOX_SIZE) * BOX_SIZE;
+        for (let r = boxRow; r < boxRow + BOX_SIZE; r++) {
+            for (let c = boxCol; c < boxCol + BOX_SIZE; c++) {
+                if (grid[r][c] === num) return false;
+            }
+        }
+        return true;
+    }
+    
+    function findDuplicates(row, col, value) {
+        const duplicates = [];
+        
+        for (let c = 0; c < SIZE; c++) {
+            if (c !== col && grid[row][c] === value) {
+                duplicates.push({row, col: c});
+            }
+        }
+        
+        for (let r = 0; r < SIZE; r++) {
+            if (r !== row && grid[r][col] === value) {
+                duplicates.push({row: r, col});
+            }
+        }
+        
+        const boxRow = Math.floor(row / BOX_SIZE) * BOX_SIZE;
+        const boxCol = Math.floor(col / BOX_SIZE) * BOX_SIZE;
+        for (let r = boxRow; r < boxRow + BOX_SIZE; r++) {
+            for (let c = boxCol; c < boxCol + BOX_SIZE; c++) {
+                if ((r !== row || c !== col) && grid[r][c] === value) {
+                    const isDuplicate = duplicates.some(d => d.row === r && d.col === c);
+                    if (!isDuplicate) duplicates.push({row: r, col: c});
+                }
+            }
+        }
+        
+        return duplicates;
+    }
+    
+    function placeLetter(row, col, letterIndex) {
+        // Mode 3 erreurs
+        if (errorMode) {
+            if (solution[row][col] !== letterIndex) {
+                const alreadyCounted = errorCells.some(cell => cell.row === row && cell.col === col);
+                if (!alreadyCounted) {
+                    errorCount++;
+                    errorCells.push({row, col});
+                    updateErrorCounter();
+                    
+                    if (errorCount >= 3) {
+                        grid[row][col] = letterIndex;
+                        displayGrid();
+                        showMessage('3 erreurs détectées !', 'error');
+                        setTimeout(() => {
+                            if (confirm('Voulez-vous repartir de la grille vierge ?')) {
+                                clear();
+                            } else {
+                                showMessage('Corrigez les erreurs en rouge', 'warning');
+                            }
+                        }, 1000);
+                        return;
+                    }
+                    
+                    showMessage(`Erreur ${errorCount}/3`, 'warning');
+                }
+            } else {
+                errorCells = errorCells.filter(cell => !(cell.row === row && cell.col === col));
+            }
+            
+            grid[row][col] = letterIndex;
             displayGrid();
             checkWin();
+            return;
         }
         
-        // ===== MODES D'AIDE =====
-        
-        function getCandidates(row, col) {
-            const candidates = [];
-            for (let num = 0; num < SIZE; num++) {
-                if (isValid(grid, row, col, num)) {
-                    candidates.push(num);
-                }
-            }
-            return candidates;
-        }
-        
-        function findNextHint() {
-            if (!stepByStepMode) return;
+        // Mode normal : aucune correction, on place directement
+        // Mode corrigé : vérification des doublons
+        if (correctedMode) {
+            const duplicates = findDuplicates(row, col, letterIndex);
             
-            for (let row = 0; row < SIZE; row++) {
-                for (let col = 0; col < SIZE; col++) {
-                    if (grid[row][col] === -1) {
-                        const candidates = getCandidates(row, col);
-                        if (candidates.length === 1) {
-                            currentHint = {row, col, value: candidates[0]};
-                            displayGrid();
-                            showMessage(`Indice : Placez ${valueToDisplay(candidates[0])} ici.`);
-                            return;
-                        }
-                    }
-                }
-            }
-            
-            activateAriadne();
-        }
-        
-        function activateAriadne() {
-            let minCandidates = SIZE + 1;
-            let bestCells = [];
-            
-            for (let row = 0; row < SIZE; row++) {
-                for (let col = 0; col < SIZE; col++) {
-                    if (grid[row][col] === -1) {
-                        const candidates = getCandidates(row, col);
-                        if (candidates.length > 1 && candidates.length < minCandidates) {
-                            minCandidates = candidates.length;
-                            bestCells = [{row, col, candidates}];
-                        } else if (candidates.length === minCandidates) {
-                            bestCells.push({row, col, candidates});
-                        }
-                    }
-                }
-            }
-            
-            if (bestCells.length > 0) {
-                const chosen = bestCells[Math.floor(Math.random() * bestCells.length)];
-                ariodneCandidates = [{
-                    row: chosen.row,
-                    col: chosen.col,
-                    letters: chosen.candidates.map(c => valueToDisplay(c))
-                }];
-                currentHint = null;
-                ariadneMode = true;
+            if (duplicates.length > 0) {
+                grid[row][col] = letterIndex;
                 displayGrid();
-                showMessage(`Fil d'Ariane : ${ariodneCandidates[0].letters.join(', ')}`);
-            }
-        }
-        
-        // ===== ACTIONS =====
-        
-        function verify() {
-            const errors = [];
-            
-            for (let row = 0; row < SIZE; row++) {
-                for (let col = 0; col < SIZE; col++) {
-                    if (grid[row][col] !== -1 && initialGrid[row][col] === -1) {
-                        if (grid[row][col] !== solution[row][col]) {
-                            errors.push({row, col});
-                        }
-                    }
-                }
-            }
-            
-            if (errors.length > 0) {
+                
                 const cells = document.querySelectorAll('.cell');
-                errors.forEach(({row, col}) => {
-                    const index = row * SIZE + col;
-                    cells[index].classList.add('error');
+                duplicates.forEach(dup => {
+                    const idx = dup.row * SIZE + dup.col;
+                    cells[idx].classList.add('error');
                 });
                 
                 setTimeout(() => {
-                    errors.forEach(({row, col}) => {
-                        grid[row][col] = -1;
-                    });
+                    grid[row][col] = -1;
                     displayGrid();
-                }, 2000);
+                }, 1000);
                 
-                showMessage(`${errors.length} erreur(s) trouvée(s).`, 'error');
-            } else {
-                showMessage('Aucune erreur !', 'success');
+                showMessage(`Doublon détecté ! ${valueToDisplay(letterIndex)} existe déjà.`, 'warning');
+                return;
             }
         }
         
-        function solve() {
-            grid = solution.map(row => [...row]);
-            displayGrid();
-            showMessage('Grille résolue !', 'success');
+        // Placer la lettre (mode normal ou mode corrigé sans doublon)
+        grid[row][col] = letterIndex;
+        
+        if (stepByStepMode && currentHint) {
+            if (currentHint.row === row && currentHint.col === col && currentHint.value === letterIndex) {
+                showMessage('Bravo ! Lettre correcte.', 'success');
+                currentHint = null;
+                ariadneMode = false;
+                setTimeout(() => findNextHint(), 1000);
+            }
         }
         
-        function clear() {
-            grid = initialGrid.map(row => [...row]);
-            errorCount = 0;
-            errorCells = [];
-            selectedCell = null;
-            updateErrorCounter();
-            displayGrid();
-            showMessage('Grille vidée.');
+        if (ariadneMode && ariodneCandidates.length > 0) {
+            const candidate = ariodneCandidates.find(c => c.row === row && c.col === col);
+            if (candidate && candidate.letters.includes(valueToDisplay(letterIndex))) {
+                const correctLetter = valueToDisplay(solution[row][col]);
+                if (valueToDisplay(letterIndex) !== correctLetter) {
+                    showMessage(`Mauvais choix ! La bonne lettre est ${correctLetter}.`, 'warning');
+                } else {
+                    showMessage('Bon choix !', 'success');
+                    ariadneMode = false;
+                    ariodneCandidates = [];
+                    setTimeout(() => findNextHint(), 1000);
+                }
+            }
         }
         
-        function saveGame() {
-            if (!currentPlayer) return;
-            
-            currentPlayer.savedGame = {
-                size: SIZE,
-                useNumbers: USE_NUMBERS,
-                grid: grid.map(row => [...row]),
-                solution: solution.map(row => [...row]),
-                initialGrid: initialGrid.map(row => [...row]),
-                difficulty: document.getElementById('gameDifficulty').textContent,
-                stepByStepMode,
-                errorMode,
-                correctedMode,
-                errorCount,
-                errorCells,
-                startTime: gameStartTime,
-                scoreRecorded: scoreRecorded // Sauvegarder le flag
-            };
-            
-            savePlayers();
-            showMessage('Partie sauvegardée !', 'success');
+        displayGrid();
+        checkWin();
+        updateKeyboardState(); // Mettre à jour le clavier
+    }
+    
+    // ===== MODES D'AIDE =====
+    
+    function getCandidates(row, col) {
+        const candidates = [];
+        for (let num = 0; num < SIZE; num++) {
+            if (isValid(grid, row, col, num)) {
+                candidates.push(num);
+            }
         }
+        return candidates;
+    }
+    
+    function findNextHint() {
+        if (!stepByStepMode) return;
         
-        function checkWin() {
-            for (let row = 0; row < SIZE; row++) {
-                for (let col = 0; col < SIZE; col++) {
-                    if (grid[row][col] === -1 || grid[row][col] !== solution[row][col]) {
+        for (let row = 0; row < SIZE; row++) {
+            for (let col = 0; col < SIZE; col++) {
+                if (grid[row][col] === -1) {
+                    const candidates = getCandidates(row, col);
+                    if (candidates.length === 1) {
+                        currentHint = {row, col, value: candidates[0]};
+                        displayGrid();
+                        showMessage(`Indice : Placez ${valueToDisplay(candidates[0])} ici.`);
                         return;
                     }
                 }
             }
-            
-            // Ne faire qu'une seule fois les actions de victoire
-            if (scoreRecorded) {
-                return; // Score déjà enregistré pour cette partie
-            }
-            
-            const timeElapsed = Math.floor((Date.now() - gameStartTime) / 1000);
-            const difficulty = document.getElementById('gameDifficulty').textContent.toLowerCase();
-            
-            showMessage('🎉 FÉLICITATIONS ! Vous avez gagné ! 🎉', 'success');
-            
-            if (currentPlayer) {
-                currentPlayer.gamesPlayed++;
-                currentPlayer.gamesWon++;
-                
-                // Enregistrer le score
-                if (!currentPlayer.scores) {
-                    currentPlayer.scores = [];
+        }
+        
+        activateAriadne();
+    }
+    
+    function activateAriadne() {
+        let minCandidates = SIZE + 1;
+        let bestCells = [];
+        
+        for (let row = 0; row < SIZE; row++) {
+            for (let col = 0; col < SIZE; col++) {
+                if (grid[row][col] === -1) {
+                    const candidates = getCandidates(row, col);
+                    if (candidates.length > 1 && candidates.length < minCandidates) {
+                        minCandidates = candidates.length;
+                        bestCells = [{row, col, candidates}];
+                    } else if (candidates.length === minCandidates) {
+                        bestCells.push({row, col, candidates});
+                    }
                 }
-                
-                currentPlayer.scores.push({
-                    size: SIZE,
-                    difficulty: difficulty,
-                    time: timeElapsed,
-                    date: new Date().toISOString()
-                });
-                
-                // Effacer la partie sauvegardée
-                currentPlayer.savedGame = null;
-                
-                // Marquer le score comme enregistré
-                scoreRecorded = true;
-                
-                savePlayers();
-                
-                setTimeout(() => {
-                    alert(`Temps: ${formatTime(timeElapsed)}\n\nScore enregistré !`);
-                }, 500);
             }
         }
         
-        function updateErrorCounter() {
-            const counter = document.getElementById('errorCounter');
-            const clearBtn = document.getElementById('clearBtn');
-            
-            if (errorMode) {
-                counter.style.display = 'inline-block';
-                counter.textContent = `Erreurs: ${errorCount}/3`;
-                counter.className = 'error-counter';
-                
-                if (errorCount >= 3) {
-                    counter.classList.add('danger');
-                    clearBtn.classList.add('danger');
-                } else if (errorCount >= 2) {
-                    counter.classList.add('danger');
-                    clearBtn.classList.remove('danger');
-                } else {
-                    clearBtn.classList.remove('danger');
+        if (bestCells.length > 0) {
+            const chosen = bestCells[Math.floor(Math.random() * bestCells.length)];
+            ariodneCandidates = [{
+                row: chosen.row,
+                col: chosen.col,
+                letters: chosen.candidates.map(c => valueToDisplay(c))
+            }];
+            currentHint = null;
+            ariadneMode = true;
+            displayGrid();
+            showMessage(`Fil d'Ariane : ${ariodneCandidates[0].letters.join(', ')}`);
+        }
+    }
+    
+    // ===== ACTIONS =====
+    
+    function verify() {
+        const errors = [];
+        
+        for (let row = 0; row < SIZE; row++) {
+            for (let col = 0; col < SIZE; col++) {
+                if (grid[row][col] !== -1 && initialGrid[row][col] === -1) {
+                    if (grid[row][col] !== solution[row][col]) {
+                        errors.push({row, col});
+                    }
                 }
+            }
+        }
+        
+        if (errors.length > 0) {
+            const cells = document.querySelectorAll('.cell');
+            errors.forEach(({row, col}) => {
+                const index = row * SIZE + col;
+                cells[index].classList.add('error');
+            });
+            
+            setTimeout(() => {
+                errors.forEach(({row, col}) => {
+                    grid[row][col] = -1;
+                });
+                displayGrid();
+                updateKeyboardState();
+            }, 2000);
+            
+            showMessage(`${errors.length} erreur(s) trouvée(s).`, 'error');
+        } else {
+            showMessage('Aucune erreur !', 'success');
+        }
+    }
+    
+    function solve() {
+        grid = solution.map(row => [...row]);
+        displayGrid();
+        updateKeyboardState();
+        showMessage('Grille résolue !', 'success');
+    }
+    
+    function clear() {
+        grid = initialGrid.map(row => [...row]);
+        errorCount = 0;
+        errorCells = [];
+        selectedCell = null;
+        updateErrorCounter();
+        displayGrid();
+        updateKeyboardState();
+        showMessage('Grille vidée.');
+    }
+    
+    function saveGame() {
+        if (!currentPlayer) return;
+        
+        // Calculer le temps total écoulé jusqu'à maintenant
+        const currentSessionTime = Math.floor((Date.now() - gameStartTime) / 1000);
+        const savedTotalTime = totalElapsedTime + currentSessionTime;
+        
+        currentPlayer.savedGame = {
+            size: SIZE,
+            useNumbers: USE_NUMBERS,
+            grid: grid.map(row => [...row]),
+            solution: solution.map(row => [...row]),
+            initialGrid: initialGrid.map(row => [...row]),
+            difficulty: document.getElementById('gameDifficulty').textContent,
+            stepByStepMode,
+            errorMode,
+            correctedMode,
+            errorCount,
+            errorCells,
+            totalElapsedTime: savedTotalTime, // Sauvegarder le temps total
+            scoreRecorded: scoreRecorded // Sauvegarder le flag
+        };
+        
+        savePlayers();
+        showMessage('Partie sauvegardée !', 'success');
+    }
+    
+    function checkWin() {
+        for (let row = 0; row < SIZE; row++) {
+            for (let col = 0; col < SIZE; col++) {
+                if (grid[row][col] === -1 || grid[row][col] !== solution[row][col]) {
+                    return;
+                }
+            }
+        }
+        
+        // Ne faire qu'une seule fois les actions de victoire
+        if (scoreRecorded) {
+            return; // Score déjà enregistré pour cette partie
+        }
+        
+        // Calculer le temps total : temps déjà écoulé + temps de cette session
+        const currentSessionTime = Math.floor((Date.now() - gameStartTime) / 1000);
+        const timeElapsed = totalElapsedTime + currentSessionTime;
+        const difficulty = document.getElementById('gameDifficulty').textContent.toLowerCase();
+        const gameMode = document.getElementById('gameMode').textContent.toLowerCase();
+        
+        showMessage('🎉 FÉLICITATIONS ! Vous avez gagné ! 🎉', 'success');
+        
+        if (currentPlayer) {
+            currentPlayer.gamesPlayed++;
+            currentPlayer.gamesWon++;
+            
+            // Enregistrer le score
+            if (!currentPlayer.scores) {
+                currentPlayer.scores = [];
+            }
+            
+            currentPlayer.scores.push({
+                size: SIZE,
+                difficulty: difficulty,
+                mode: gameMode,
+                time: timeElapsed,
+                date: new Date().toISOString()
+            });
+            
+            // Effacer la partie sauvegardée
+            currentPlayer.savedGame = null;
+            
+            // Marquer le score comme enregistré
+            scoreRecorded = true;
+            
+            savePlayers();
+            
+            setTimeout(() => {
+                alert(`Temps: ${formatTime(timeElapsed)}\n\nScore enregistré !`);
+            }, 500);
+        }
+    }
+    
+    function updateErrorCounter() {
+        const counter = document.getElementById('errorCounter');
+        const clearBtn = document.getElementById('clearBtn');
+        
+        if (errorMode) {
+            counter.style.display = 'inline-block';
+            counter.textContent = `Erreurs: ${errorCount}/3`;
+            counter.className = 'error-counter';
+            
+            if (errorCount >= 3) {
+                counter.classList.add('danger');
+                clearBtn.classList.add('danger');
+            } else if (errorCount >= 2) {
+                counter.classList.add('danger');
+                clearBtn.classList.remove('danger');
             } else {
-                counter.style.display = 'none';
                 clearBtn.classList.remove('danger');
             }
+        } else {
+            counter.style.display = 'none';
+            clearBtn.classList.remove('danger');
         }
+    }
+    
+    function updateScoresDisplay() {
+        const filterSize = document.getElementById('filterSize').value;
+        const filterDiff = document.getElementById('filterDifficulty').value;
+        const filterMode = document.getElementById('filterMode').value;
         
-        function updateScoresDisplay() {
-            const filterSize = document.getElementById('filterSize').value;
-            const filterDiff = document.getElementById('filterDifficulty').value;
-            
-            // Collecter tous les scores
-            let allScores = [];
-            players.forEach(player => {
-                if (player.scores) {
-                    player.scores.forEach(score => {
-                        allScores.push({
-                            player: player.name,
-                            ...score
-                        });
+        // Collecter tous les scores
+        let allScores = [];
+        players.forEach(player => {
+            if (player.scores) {
+                player.scores.forEach(score => {
+                    allScores.push({
+                        player: player.name,
+                        ...score
                     });
-                }
-            });
-            
-            // Filtrer
-            if (filterSize !== 'all') {
-                allScores = allScores.filter(s => s.size === parseInt(filterSize));
-            }
-            if (filterDiff !== 'all') {
-                allScores = allScores.filter(s => s.difficulty === filterDiff);
-            }
-            
-            // Trier par temps
-            allScores.sort((a, b) => a.time - b.time);
-            
-            // Afficher le tableau
-            const tableEl = document.getElementById('scoresTable');
-            
-            if (allScores.length === 0) {
-                tableEl.innerHTML = '<div class="no-data">Aucun score enregistré</div>';
-            } else {
-                let html = '<table class="scores-table"><thead><tr>';
-                html += '<th>Rang</th><th>Joueur</th><th>Taille</th><th>Difficulté</th><th>Temps</th><th>Date</th>';
-                html += '</tr></thead><tbody>';
-                
-                allScores.slice(0, 20).forEach((score, index) => {
-                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
-                    const date = new Date(score.date).toLocaleDateString('fr-FR');
-                    html += '<tr>';
-                    html += `<td><span class="medal">${medal}</span>${index + 1}</td>`;
-                    html += `<td><strong>${score.player}</strong></td>`;
-                    html += `<td>${score.size}×${score.size}</td>`;
-                    html += `<td>${score.difficulty.charAt(0).toUpperCase() + score.difficulty.slice(1)}</td>`;
-                    html += `<td><strong>${formatTime(score.time)}</strong></td>`;
-                    html += `<td>${date}</td>`;
-                    html += '</tr>';
                 });
-                
-                html += '</tbody></table>';
-                tableEl.innerHTML = html;
             }
-            
-            // Afficher les stats par joueur
-            displayPlayerStats();
+        });
+        
+        // Filtrer
+        if (filterSize !== 'all') {
+            allScores = allScores.filter(s => s.size === parseInt(filterSize));
+        }
+        if (filterDiff !== 'all') {
+            allScores = allScores.filter(s => s.difficulty === filterDiff);
+        }
+        if (filterMode !== 'all') {
+            allScores = allScores.filter(s => s.mode === filterMode);
         }
         
-        function displayPlayerStats() {
-            const statsEl = document.getElementById('playerStats');
+        // Trier par temps
+        allScores.sort((a, b) => a.time - b.time);
+        
+        // Afficher le tableau
+        const tableEl = document.getElementById('scoresTable');
+        
+        if (allScores.length === 0) {
+            tableEl.innerHTML = '<div class="no-data">Aucun score enregistré</div>';
+        } else {
+            let html = '<table class="scores-table"><thead><tr>';
+            html += '<th>Rang</th><th>Joueur</th><th>Taille</th><th>Difficulté</th><th>Mode</th><th>Temps</th><th>Date</th>';
+            html += '</tr></thead><tbody>';
             
-            if (players.length === 0) {
-                statsEl.innerHTML = '<div class="no-data">Aucun joueur</div>';
-                return;
-            }
-            
-            let html = '';
-            players.forEach(player => {
-                if (!player.scores || player.scores.length === 0) return;
-                
-                // Calculer les stats
-                const totalGames = player.scores.length;
-                const avgTime = player.scores.reduce((sum, s) => sum + s.time, 0) / totalGames;
-                const bestTime = Math.min(...player.scores.map(s => s.time));
-                
-                // Par taille
-                const by9 = player.scores.filter(s => s.size === 9).length;
-                const by16 = player.scores.filter(s => s.size === 16).length;
-                
-                html += '<div class="stat-card">';
-                html += `<h3>👤 ${player.name}</h3>`;
-                html += '<div class="stat-row"><span>Parties gagnées :</span><strong>' + totalGames + '</strong></div>';
-                html += '<div class="stat-row"><span>Temps moyen :</span><strong>' + formatTime(Math.floor(avgTime)) + '</strong></div>';
-                html += '<div class="stat-row"><span>Meilleur temps :</span><strong>' + formatTime(bestTime) + '</strong></div>';
-                html += '<div class="stat-row"><span>9×9 / 16×16 :</span><strong>' + by9 + ' / ' + by16 + '</strong></div>';
-                html += '</div>';
+            allScores.slice(0, 20).forEach((score, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                const date = new Date(score.date).toLocaleDateString('fr-FR');
+                const mode = score.mode || 'normal'; // Par défaut si pas enregistré
+                html += '<tr>';
+                html += `<td><span class="medal">${medal}</span>${index + 1}</td>`;
+                html += `<td><strong>${score.player}</strong></td>`;
+                html += `<td>${score.size}×${score.size}</td>`;
+                html += `<td>${score.difficulty.charAt(0).toUpperCase() + score.difficulty.slice(1)}</td>`;
+                html += `<td>${mode.charAt(0).toUpperCase() + mode.slice(1)}</td>`;
+                html += `<td><strong>${formatTime(score.time)}</strong></td>`;
+                html += `<td>${date}</td>`;
+                html += '</tr>';
             });
             
-            if (html === '') {
-                html = '<div class="no-data">Aucun score enregistré</div>';
-            }
+            html += '</tbody></table>';
+            tableEl.innerHTML = html;
+        }
+        
+        // Afficher les stats par joueur
+        displayPlayerStats();
+    }
+    
+    function displayPlayerStats() {
+        const statsEl = document.getElementById('playerStats');
+        
+        if (players.length === 0) {
+            statsEl.innerHTML = '<div class="no-data">Aucun joueur</div>';
+            return;
+        }
+        
+        let html = '';
+        players.forEach(player => {
+            if (!player.scores || player.scores.length === 0) return;
             
-            statsEl.innerHTML = html;
-        }
-        
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        function showMessage(text, type = '') {
-            const msg = document.getElementById('message');
-            msg.textContent = text;
-            msg.className = 'message ' + type;
-        }
-        
-        // ===== INITIALISATION =====
-        
-        window.addEventListener('load', () => {
-            loadPlayers();
+            // Calculer les stats
+            const totalGames = player.scores.length;
+            const avgTime = player.scores.reduce((sum, s) => sum + s.time, 0) / totalGames;
+            const bestTime = Math.min(...player.scores.map(s => s.time));
+            
+            // Par taille
+            const by9 = player.scores.filter(s => s.size === 9).length;
+            const by16 = player.scores.filter(s => s.size === 16).length;
+            
+            html += '<div class="stat-card">';
+            html += `<h3>👤 ${player.name}</h3>`;
+            html += '<div class="stat-row"><span>Parties gagnées :</span><strong>' + totalGames + '</strong></div>';
+            html += '<div class="stat-row"><span>Temps moyen :</span><strong>' + formatTime(Math.floor(avgTime)) + '</strong></div>';
+            html += '<div class="stat-row"><span>Meilleur temps :</span><strong>' + formatTime(bestTime) + '</strong></div>';
+            html += '<div class="stat-row"><span>9×9 / 16×16 :</span><strong>' + by9 + ' / ' + by16 + '</strong></div>';
+            html += '</div>';
         });
-    </script>
+        
+        if (html === '') {
+            html = '<div class="no-data">Aucun score enregistré</div>';
+        }
+        
+        statsEl.innerHTML = html;
+    }
+    
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    function showMessage(text, type = '') {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.className = 'message ' + type;
+    }
+    
+    // ===== INITIALISATION =====
+    
+    window.addEventListener('load', () => {
+        loadPlayers();
+    });
+</script>
+```
+
 </body>
 </html>
