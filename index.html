@@ -302,7 +302,8 @@
     }
     
     /* Bordures épaisses pour grille 9x9 (tous les 3) */
-    #sudoku-grid[data-size="9"] .cell:nth-child(3n):not(:nth-child(9n)) {
+    #sudoku-grid[data-size="9"] .cell:nth-child(9n+3),
+    #sudoku-grid[data-size="9"] .cell:nth-child(9n+6) {
         border-right: 3px solid #333 !important;
     }
     
@@ -312,7 +313,9 @@
     }
     
     /* Bordures épaisses pour grille 16x16 (tous les 4) */
-    #sudoku-grid[data-size="16"] .cell:nth-child(4n):not(:nth-child(16n)) {
+    #sudoku-grid[data-size="16"] .cell:nth-child(16n+4),
+    #sudoku-grid[data-size="16"] .cell:nth-child(16n+8),
+    #sudoku-grid[data-size="16"] .cell:nth-child(16n+12) {
         border-right: 3px solid #333 !important;
     }
     
