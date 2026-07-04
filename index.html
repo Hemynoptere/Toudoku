@@ -18,7 +18,7 @@
             background: white;
             color: #333;
             min-height: 100vh;
-            padding: 20px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -26,9 +26,21 @@
         
         h1 {
             font-family: 'Righteous', cursive;
-            font-size: 2em;
-            margin-bottom: 30px;
+            font-size: 1.6em;
+            margin-bottom: 10px;
             color: #0066cc;
+        }
+        
+        .config-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .config-columns .config-section {
+            flex: 1 1 320px;
+            min-width: 280px;
+            margin-bottom: 0;
         }
         
         .screen {
@@ -44,60 +56,61 @@
         /* Écran de configuration */
         .config-section {
             background: #f8f9fa;
-            padding: 25px;
+            padding: 12px;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border: 2px solid #dee2e6;
         }
         
         .config-section h2 {
             color: #0066cc;
-            font-size: 1.2em;
-            margin-bottom: 15px;
+            font-size: 1.05em;
+            margin-bottom: 8px;
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         input[type="text"], select {
             width: 100%;
-            padding: 10px;
+            padding: 7px;
             font-family: 'Space Mono', monospace;
-            font-size: 14px;
+            font-size: 13px;
             border: 2px solid #0066cc;
             border-radius: 5px;
         }
         
         .radio-group {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         
         .radio-option {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 13px;
         }
         
         input[type="radio"] {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
         
         button {
-            padding: 12px 25px;
+            padding: 9px 16px;
             font-family: 'Space Mono', monospace;
-            font-size: 14px;
+            font-size: 13px;
             border: 2px solid #0066cc;
             background: #0066cc;
             color: white;
@@ -122,21 +135,23 @@
         
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         
         .player-list {
-            max-height: 200px;
+            max-height: 90px;
             overflow-y: auto;
             border: 2px solid #dee2e6;
             border-radius: 5px;
-            padding: 10px;
+            padding: 6px;
         }
         
         .player-item {
-            padding: 10px;
-            margin-bottom: 5px;
+            padding: 6px 8px;
+            margin-bottom: 4px;
             background: white;
             border-radius: 5px;
             display: flex;
@@ -144,6 +159,7 @@
             align-items: center;
             cursor: pointer;
             border: 2px solid transparent;
+            font-size: 13px;
         }
         
         .player-item:hover {
@@ -177,35 +193,17 @@
         }
         
         /* Écran de jeu */
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .game-info {
-            font-size: 13px;
-        }
-        
-        .game-info strong {
-            color: #0066cc;
-        }
-        
         .game-controls {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         
         .game-controls button {
-            padding: 8px 15px;
-            font-size: 12px;
+            padding: 6px 12px;
+            font-size: 11px;
         }
         
         button.danger {
@@ -218,8 +216,8 @@
         }
         
         .message {
-            margin-bottom: 5px;
-            padding: 8px 15px;
+            margin-bottom: 4px;
+            padding: 6px 15px;
             background: #e6f2ff;
             border: 2px solid #0066cc;
             border-radius: 5px;
@@ -266,7 +264,7 @@
         .grid-container {
             display: flex;
             justify-content: center;
-            margin: 10px 0;
+            margin: 4px 0;
         }
         
         #sudoku-grid {
@@ -278,6 +276,7 @@
         }
         
         .cell {
+            position: relative;
             width: 35px;
             height: 35px;
             display: flex;
@@ -289,6 +288,7 @@
             border: 1px solid #ddd;
             cursor: pointer;
             transition: all 0.2s;
+            overflow: hidden;
         }
         
         .cell.thick-right {
@@ -375,6 +375,35 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Candidats saisis manuellement par le joueur dans une case non validée */
+        .cell.user-candidates {
+            cursor: pointer;
+        }
+        
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 100%;
+            height: 100%;
+            align-content: center;
+            justify-items: center;
+            align-items: center;
+        }
+        
+        .candidates-grid span {
+            font-weight: bold;
+            color: #0066cc;
+            line-height: 1;
+        }
+        
+        .candidates-grid.size-9 span {
+            font-size: 10px;
+        }
+        
+        .candidates-grid.size-16 span {
+            font-size: 7px;
+        }
+        
         #hidden-input {
             position: absolute;
             opacity: 0;
@@ -383,10 +412,10 @@
         }
         
         .help-text {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
             font-style: italic;
-            margin-top: 5px;
+            margin-top: 3px;
         }
         
         .scores-table {
@@ -511,7 +540,7 @@
             display: grid;
             gap: 0;
             justify-content: center;
-            margin: 5px auto 5px auto;
+            margin: 3px auto 3px auto;
             padding: 0;
             max-width: fit-content;
         }
@@ -575,6 +604,79 @@
         .key-btn.delete-key:active:not(:disabled) {
             box-shadow: 0 1px 0 #c82333;
         }
+        
+        /* Clavier de saisie des candidats (rangée de ronds sous chaque touche) */
+        .candidate-keyboard {
+            margin: 0 auto 4px auto;
+            padding-top: 1px;
+        }
+        
+        .candidate-key-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .candidate-key {
+            width: 45%;
+            aspect-ratio: 1;
+            min-width: 10px;
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+            margin: 0;
+            background: #4da6ff;
+            box-shadow: 0 1px 0 #2d8ae0;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.1s;
+        }
+        
+        .candidate-key:hover:not(:disabled) {
+            background: #2d8ae0;
+            transform: translateY(-1px);
+        }
+        
+        .candidate-key:active:not(:disabled) {
+            transform: translateY(1px);
+            box-shadow: 0 0 0 #2d8ae0;
+        }
+        
+        .candidate-key:disabled {
+            background: #d0d0d0;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        
+        .candidate-key.active {
+            background: #003d7a;
+            box-shadow: 0 0 0 2px #4da6ff;
+        }
+        
+        .candidate-key.clear-candidates-key {
+            background: #ffcdd2;
+            border: 2px solid #dc3545;
+            box-shadow: 0 1px 0 #c82333;
+        }
+        
+        .candidate-key.clear-candidates-key:hover:not(:disabled) {
+            background: #ef9a9a;
+        }
+        
+        .candidate-key.clear-candidates-key::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 12%;
+            right: 12%;
+            height: 2px;
+            background: #dc3545;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+        
+        .candidate-key.clear-candidates-key:disabled::before {
+            background: #999;
+        }
     </style>
 </head>
 <body>
@@ -584,79 +686,81 @@
     <div id="configScreen" class="screen active">
         <h1>🔤 TOUDOKU</h1>
         
-        <div class="config-section">
-            <h2>👤 Joueur</h2>
-            <div class="form-group">
-                <label>Nouveau joueur :</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="newPlayerName" placeholder="Entrez un nom">
-                    <button onclick="addPlayer()">Ajouter</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Sélectionner un joueur :</label>
-                <div id="playerList" class="player-list">
-                    <div style="padding: 20px; text-align: center; color: #999;">
-                        Aucun joueur enregistré
+        <div class="config-columns">
+            <div class="config-section">
+                <h2>👤 Joueur</h2>
+                <div class="form-group">
+                    <label>Nouveau joueur :</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="newPlayerName" placeholder="Entrez un nom">
+                        <button onclick="addPlayer()">Ajouter</button>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="config-section">
-            <h2>🎮 Paramètres du jeu</h2>
-            <div class="form-group">
-                <label>Choix de la grille :</label>
-                <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="grid9letters" name="gridType" value="9-letters">
-                        <label for="grid9letters">9×9 (Lettres A-I)</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="grid9numbers" name="gridType" value="9-numbers">
-                        <label for="grid9numbers">9×9 (Chiffres 1-9)</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="grid16letters" name="gridType" value="16-letters" checked>
-                        <label for="grid16letters">16×16 (Lettres A-P)</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="grid16numbers" name="gridType" value="16-numbers">
-                        <label for="grid16numbers">16×16 (Chiffres 1-16)</label>
+                <div class="form-group">
+                    <label>Sélectionner un joueur :</label>
+                    <div id="playerList" class="player-list">
+                        <div style="padding: 20px; text-align: center; color: #999;">
+                            Aucun joueur enregistré
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label>Difficulté :</label>
-                <select id="configDifficulty">
-                    <option value="facile">Facile</option>
-                    <option value="moyen">Moyen</option>
-                    <option value="difficile">Difficile</option>
-                    <option value="expert">Expert</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Mode de jeu :</label>
-                <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="modeNormal" name="gameMode" value="normal" checked>
-                        <label for="modeNormal">Normal</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="modeCorrected" name="gameMode" value="corrected">
-                        <label for="modeCorrected">Corrigé</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="modeStepByStep" name="gameMode" value="stepByStep">
-                        <label for="modeStepByStep">Pas à pas</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="mode3Errors" name="gameMode" value="errors">
-                        <label for="mode3Errors">Mode 3 erreurs</label>
+            
+            <div class="config-section">
+                <h2>🎮 Paramètres du jeu</h2>
+                <div class="form-group">
+                    <label>Choix de la grille :</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="grid9letters" name="gridType" value="9-letters">
+                            <label for="grid9letters">9×9 (Lettres A-I)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="grid9numbers" name="gridType" value="9-numbers">
+                            <label for="grid9numbers">9×9 (Chiffres 1-9)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="grid16letters" name="gridType" value="16-letters" checked>
+                            <label for="grid16letters">16×16 (Lettres A-P)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="grid16numbers" name="gridType" value="16-numbers">
+                            <label for="grid16numbers">16×16 (Chiffres 1-16)</label>
+                        </div>
                     </div>
                 </div>
-                <div class="help-text">
-                    Normal: aucune correction | Corrigé: détection immédiate | Pas à pas: aide progressive | 3 erreurs: comptage avant alerte
+                <div class="form-group">
+                    <label>Difficulté :</label>
+                    <select id="configDifficulty">
+                        <option value="facile">Facile</option>
+                        <option value="moyen">Moyen</option>
+                        <option value="difficile">Difficile</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mode de jeu :</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="modeNormal" name="gameMode" value="normal" checked>
+                            <label for="modeNormal">Normal</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="modeCorrected" name="gameMode" value="corrected">
+                            <label for="modeCorrected">Corrigé</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="modeStepByStep" name="gameMode" value="stepByStep">
+                            <label for="modeStepByStep">Pas à pas</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="mode3Errors" name="gameMode" value="errors">
+                            <label for="mode3Errors">Mode 3 erreurs</label>
+                        </div>
+                    </div>
+                    <div class="help-text">
+                        Normal: aucune correction | Corrigé: détection immédiate | Pas à pas: aide progressive | 3 erreurs: comptage avant alerte
+                    </div>
                 </div>
             </div>
         </div>
@@ -671,15 +775,11 @@
 
     <!-- ÉCRAN 2: JEU -->
     <div id="gameScreen" class="screen">
-        <div class="game-header">
-            <div class="game-info">
-                <div><strong>Joueur:</strong> <span id="playerName">-</span></div>
-                <div><strong>Difficulté:</strong> <span id="gameDifficulty">-</span></div>
-                <div><strong>Mode:</strong> <span id="gameMode">-</span></div>
-            </div>
-            <div>
-                <button class="secondary" onclick="backToConfig()">⚙️ Config</button>
-            </div>
+        <!-- Informations de partie conservées en mémoire (non affichées) pour la sauvegarde/les scores -->
+        <div style="display: none;">
+            <span id="playerName">-</span>
+            <span id="gameDifficulty">-</span>
+            <span id="gameMode">-</span>
         </div>
         
         <div class="game-controls">
@@ -688,6 +788,7 @@
             <button onclick="solve()">Résoudre</button>
             <button id="clearBtn" onclick="clear()">Vider</button>
             <button class="secondary" onclick="saveGame()">💾 Sauvegarder</button>
+            <button class="secondary" onclick="backToConfig()">⚙️ Config</button>
             <span id="errorCounter" style="display: none;"></span>
         </div>
         
@@ -698,6 +799,7 @@
         </div>
         
         <div id="virtualKeyboard" class="virtual-keyboard"></div>
+        <div id="candidateKeyboard" class="virtual-keyboard candidate-keyboard"></div>
     </div>
 
     <!-- ÉCRAN 3: SCORES -->
@@ -860,6 +962,18 @@
                 <div class="help-tip" style="background: #fff3cd; border-color: #ffc107;">
                     <strong>⚠️ Clavier physique uniquement :</strong> Si vous utilisez votre clavier d'ordinateur pour la grille 16×16 avec chiffres, n'oubliez pas que pour saisir 10 à 16, vous devez utiliser les touches A à G. Avec le clavier virtuel sous la grille, ce n'est pas nécessaire : cliquez directement sur 10, 11, 12... 16 !
                 </div>
+                
+                <div class="help-section">
+                    <h3>✏️ Candidats</h3>
+                    <p>Les candidats sont des valeurs possibles que vous notez temporairement dans une case, en attendant d'être sûr de la bonne réponse. Ils s'affichent en petit, répartis par groupes de trois, à l'intérieur de la case.</p>
+                    <ul>
+                        <li><strong>Sélectionnez</strong> une case vide (non pré-remplie et non validée).</li>
+                        <li><strong>Ajouter/retirer un candidat :</strong> sous chaque touche du clavier principal se trouve un petit rond bleu. Tapez dessus pour ajouter le candidat correspondant dans la case sélectionnée ; tapez à nouveau sur le même rond pour le retirer.</li>
+                        <li><strong>Effacer tous les candidats d'une case :</strong> utilisez le rond barré 🚫 situé à droite de la rangée de candidats.</li>
+                        <li><strong>Effacement automatique :</strong> dès qu'une valeur définitive est saisie dans une case (via le clavier principal ou le clavier physique), les candidats de cette case s'effacent automatiquement.</li>
+                        <li>Les ronds de candidats sont désactivés lorsqu'aucune case n'est sélectionnée, ou lorsque la case sélectionnée contient déjà une valeur définitive.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -890,6 +1004,7 @@
         let currentGridSize = 16;
         let scoreRecorded = false; // Flag pour éviter les doublons
         let totalElapsedTime = 0; // Temps total en secondes (cumulé même après pause)
+        let candidatesGrid = []; // candidatesGrid[row][col] = tableau des valeurs candidates saisies par le joueur
         
         // Grille de base pré-générée 16×16
         const BASE_SOLUTION_16 = [
@@ -1154,6 +1269,11 @@
             grid = gameState.grid.map(row => [...row]);
             solution = gameState.solution.map(row => [...row]);
             initialGrid = gameState.initialGrid.map(row => [...row]);
+            if (gameState.candidatesGrid) {
+                candidatesGrid = gameState.candidatesGrid.map(row => row.map(c => [...c]));
+            } else {
+                initCandidatesGrid();
+            }
             stepByStepMode = gameState.stepByStepMode || false;
             errorMode = gameState.errorMode || false;
             correctedMode = gameState.correctedMode || false;
@@ -1234,12 +1354,13 @@
             errorCells = [];
             selectedCell = null;
             gameStartTime = Date.now();
+            initCandidatesGrid();
             
             initGrid();
             displayGrid();
             updateErrorCounter();
             createVirtualKeyboard(); // Créer le clavier virtuel
-            showMessage('Nouvelle grille générée ! Bonne chance ! 🎮');
+            showMessage('');
         }
         
         // ===== CLAVIER VIRTUEL =====
@@ -1272,6 +1393,7 @@
                     if (selectedCell && initialGrid[selectedCell.row][selectedCell.col] === -1) {
                         placeLetter(selectedCell.row, selectedCell.col, i);
                         updateKeyboardState();
+                        updateCandidateKeyboardState();
                     }
                 };
                 
@@ -1289,6 +1411,7 @@
                     grid[selectedCell.row][selectedCell.col] = -1;
                     displayGrid();
                     updateKeyboardState();
+                    updateCandidateKeyboardState();
                 }
             };
             
@@ -1296,6 +1419,87 @@
             
             // Mettre à jour l'état initial
             updateKeyboardState();
+            
+            // Créer la rangée de touches de saisie des candidats
+            createCandidateKeyboard();
+        }
+        
+        function createCandidateKeyboard() {
+            const candKeyboard = document.getElementById('candidateKeyboard');
+            if (!candKeyboard) return;
+            candKeyboard.innerHTML = '';
+            
+            candKeyboard.className = 'virtual-keyboard candidate-keyboard';
+            candKeyboard.classList.add(`size-${SIZE}`);
+            
+            const cellSize = SIZE === 9 ? 45 : 35;
+            const gridWidth = SIZE * cellSize;
+            const keyWidth = gridWidth / SIZE;
+            
+            candKeyboard.style.width = `${gridWidth + cellSize}px`;
+            candKeyboard.style.gridTemplateColumns = `repeat(${SIZE}, ${keyWidth}px) ${cellSize}px`;
+            
+            for (let i = 0; i < SIZE; i++) {
+                const wrap = document.createElement('div');
+                wrap.className = 'candidate-key-wrap';
+                
+                const btn = document.createElement('button');
+                btn.className = 'candidate-key';
+                btn.type = 'button';
+                btn.dataset.value = i;
+                btn.title = `Candidat ${valueToDisplay(i)}`;
+                btn.onclick = () => {
+                    if (selectedCell) {
+                        toggleCandidate(selectedCell.row, selectedCell.col, i);
+                    }
+                };
+                
+                wrap.appendChild(btn);
+                candKeyboard.appendChild(wrap);
+            }
+            
+            // Touche "effacer les candidats de la case" (rond barré)
+            const clearWrap = document.createElement('div');
+            clearWrap.className = 'candidate-key-wrap';
+            
+            const clearBtn = document.createElement('button');
+            clearBtn.className = 'candidate-key clear-candidates-key';
+            clearBtn.type = 'button';
+            clearBtn.title = 'Effacer les candidats de la case sélectionnée';
+            clearBtn.onclick = () => {
+                if (selectedCell) {
+                    clearCandidates(selectedCell.row, selectedCell.col);
+                }
+            };
+            
+            clearWrap.appendChild(clearBtn);
+            candKeyboard.appendChild(clearWrap);
+            
+            updateCandidateKeyboardState();
+        }
+        
+        function updateCandidateKeyboardState() {
+            const candKeyboard = document.getElementById('candidateKeyboard');
+            if (!candKeyboard) return;
+            
+            const disable = !selectedCell ||
+                initialGrid[selectedCell.row][selectedCell.col] !== -1 ||
+                grid[selectedCell.row][selectedCell.col] !== -1;
+            
+            candKeyboard.querySelectorAll('.candidate-key').forEach(btn => {
+                btn.disabled = disable;
+            });
+            
+            const valueButtons = candKeyboard.querySelectorAll('.candidate-key:not(.clear-candidates-key)');
+            if (selectedCell && !disable) {
+                const current = candidatesGrid[selectedCell.row][selectedCell.col];
+                valueButtons.forEach(btn => {
+                    const v = parseInt(btn.dataset.value);
+                    btn.classList.toggle('active', current.includes(v));
+                });
+            } else {
+                valueButtons.forEach(btn => btn.classList.remove('active'));
+            }
         }
         
         function updateKeyboardState() {
@@ -1382,6 +1586,7 @@
                     
                     if (letterIndex !== -1) {
                         placeLetter(selectedCell.row, selectedCell.col, letterIndex);
+                        updateCandidateKeyboardState();
                     }
                     e.target.value = '';
                 }
@@ -1392,6 +1597,7 @@
                 if (e.key === 'Backspace' || e.key === 'Delete') {
                     grid[selectedCell.row][selectedCell.col] = -1;
                     displayGrid();
+                    updateCandidateKeyboardState();
                     e.preventDefault();
                 }
             });
@@ -1407,6 +1613,7 @@
                 
                 cell.className = 'cell';
                 cell.textContent = '';
+                cell.innerHTML = '';
                 
                 // Ajouter les classes ET les styles inline pour bordures épaisses
                 if ((col + 1) % BOX_SIZE === 0 && col < SIZE - 1) {
@@ -1418,12 +1625,16 @@
                     cell.style.borderBottom = '3px solid #333';
                 }
                 
+                let contentSet = false;
+                
                 if (initialGrid[row][col] !== -1) {
                     cell.classList.add('initial');
                     cell.textContent = valueToDisplay(value);
+                    contentSet = true;
                 } else if (value !== -1) {
                     cell.classList.add('user-input');
                     cell.textContent = valueToDisplay(value);
+                    contentSet = true;
                 }
                 
                 if (selectedCell && selectedCell.row === row && selectedCell.col === col) {
@@ -1436,12 +1647,27 @@
                 if (stepByStepMode && currentHint && currentHint.row === row && currentHint.col === col) {
                     cell.classList.add('hint');
                     cell.textContent = valueToDisplay(currentHint.value);
+                    contentSet = true;
                 }
                 
                 if (ariadneMode && ariodneCandidates.some(c => c.row === row && c.col === col)) {
                     const candidate = ariodneCandidates.find(c => c.row === row && c.col === col);
                     cell.classList.add('candidates');
                     cell.textContent = candidate.letters.join('');
+                    contentSet = true;
+                }
+                
+                // Candidats saisis manuellement par le joueur (uniquement si la case est vide et libre)
+                if (!contentSet && value === -1 && candidatesGrid[row] && candidatesGrid[row][col] && candidatesGrid[row][col].length > 0) {
+                    cell.classList.add('user-candidates');
+                    const candGrid = document.createElement('div');
+                    candGrid.className = `candidates-grid size-${SIZE}`;
+                    candidatesGrid[row][col].forEach(v => {
+                        const span = document.createElement('span');
+                        span.textContent = valueToDisplay(v);
+                        candGrid.appendChild(span);
+                    });
+                    cell.appendChild(candGrid);
                 }
                 
                 if (errorCount >= 3 && errorCells.some(ec => ec.row === row && ec.col === col)) {
@@ -1461,6 +1687,7 @@
             
             selectedCell = {row, col, index};
             displayGrid();
+            updateCandidateKeyboardState();
             
             const hiddenInput = document.getElementById('hidden-input');
             hiddenInput.value = '';
@@ -1493,9 +1720,11 @@
             
             if (letterIndex !== -1) {
                 placeLetter(selectedCell.row, selectedCell.col, letterIndex);
+                updateCandidateKeyboardState();
             } else if (e.key === 'Backspace' || e.key === 'Delete') {
                 grid[selectedCell.row][selectedCell.col] = -1;
                 displayGrid();
+                updateCandidateKeyboardState();
             }
         }
         
@@ -1559,6 +1788,7 @@
                         
                         if (errorCount >= 3) {
                             grid[row][col] = letterIndex;
+                            candidatesGrid[row][col] = [];
                             displayGrid();
                             showMessage('3 erreurs détectées !', 'error');
                             setTimeout(() => {
@@ -1578,6 +1808,7 @@
                 }
                 
                 grid[row][col] = letterIndex;
+                candidatesGrid[row][col] = [];
                 displayGrid();
                 checkWin();
                 return;
@@ -1610,6 +1841,7 @@
             
             // Placer la lettre (mode normal ou mode corrigé sans doublon)
             grid[row][col] = letterIndex;
+            candidatesGrid[row][col] = [];
             
             if (stepByStepMode && currentHint) {
                 if (currentHint.row === row && currentHint.col === col && currentHint.value === letterIndex) {
@@ -1650,6 +1882,41 @@
                 }
             }
             return candidates;
+        }
+        
+        // ===== CANDIDATS SAISIS PAR LE JOUEUR =====
+        
+        function initCandidatesGrid() {
+            candidatesGrid = Array.from({ length: SIZE }, () =>
+                Array.from({ length: SIZE }, () => [])
+            );
+        }
+        
+        function toggleCandidate(row, col, value) {
+            if (initialGrid[row][col] !== -1) return;
+            if (grid[row][col] !== -1) {
+                showMessage('Cette case contient déjà une valeur validée.', 'warning');
+                return;
+            }
+            
+            const list = candidatesGrid[row][col];
+            const idx = list.indexOf(value);
+            if (idx === -1) {
+                list.push(value);
+                list.sort((a, b) => a - b);
+            } else {
+                list.splice(idx, 1);
+            }
+            
+            displayGrid();
+            updateCandidateKeyboardState();
+        }
+        
+        function clearCandidates(row, col) {
+            if (initialGrid[row][col] !== -1) return;
+            candidatesGrid[row][col] = [];
+            displayGrid();
+            updateCandidateKeyboardState();
         }
         
         function findNextHint() {
@@ -1742,8 +2009,10 @@
         
         function solve() {
             grid = solution.map(row => [...row]);
+            initCandidatesGrid();
             displayGrid();
             updateKeyboardState();
+            updateCandidateKeyboardState();
             showMessage('Grille résolue !', 'success');
         }
         
@@ -1752,9 +2021,11 @@
             errorCount = 0;
             errorCells = [];
             selectedCell = null;
+            initCandidatesGrid();
             updateErrorCounter();
             displayGrid();
             updateKeyboardState();
+            updateCandidateKeyboardState();
             showMessage('Grille vidée.');
         }
         
@@ -1771,6 +2042,7 @@
                 grid: grid.map(row => [...row]),
                 solution: solution.map(row => [...row]),
                 initialGrid: initialGrid.map(row => [...row]),
+                candidatesGrid: candidatesGrid.map(row => row.map(c => [...c])),
                 difficulty: document.getElementById('gameDifficulty').textContent,
                 stepByStepMode,
                 errorMode,
@@ -1974,6 +2246,7 @@
             const msg = document.getElementById('message');
             msg.textContent = text;
             msg.className = 'message ' + type;
+            msg.style.display = text ? '' : 'none';
         }
         
         // ===== INITIALISATION =====
